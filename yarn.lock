@@ -1192,6 +1192,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tutora/admin-app@workspace:apps/admin"
   dependencies:
+    "@tailwindcss/vite": "npm:^4.3.4"
     "@tanstack/react-query": "npm:^5.105.3"
     "@tanstack/react-router": "npm:^1.170.46"
     "@tutora/api-client": "workspace:^"
@@ -1199,8 +1200,13 @@ __metadata:
     "@tutora/ui": "workspace:^"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
+    "@vitejs/plugin-react": "npm:^6.2.1"
     react: "npm:^19.3.1"
     react-dom: "npm:^19.3.1"
+    tailwindcss: "npm:^4.3.4"
+    typescript: "npm:~5.9.3"
+    vite: "npm:^8.3.5"
+    vitest: "npm:^5.1.0"
   languageName: unknown
   linkType: soft
 
@@ -1234,6 +1240,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tutora/student-app@workspace:apps/student"
   dependencies:
+    "@tailwindcss/vite": "npm:^4.3.4"
     "@tanstack/react-query": "npm:^5.105.3"
     "@tanstack/react-router": "npm:^1.170.46"
     "@tutora/api-client": "workspace:^"
@@ -1241,8 +1248,13 @@ __metadata:
     "@tutora/ui": "workspace:^"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
+    "@vitejs/plugin-react": "npm:^6.2.1"
     react: "npm:^19.3.1"
     react-dom: "npm:^19.3.1"
+    tailwindcss: "npm:^4.3.4"
+    typescript: "npm:~5.9.3"
+    vite: "npm:^8.3.5"
+    vitest: "npm:^5.1.0"
   languageName: unknown
   linkType: soft
 
@@ -1250,6 +1262,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tutora/tutor-app@workspace:apps/tutor"
   dependencies:
+    "@tailwindcss/vite": "npm:^4.3.4"
     "@tanstack/react-query": "npm:^5.105.3"
     "@tanstack/react-router": "npm:^1.170.46"
     "@tutora/api-client": "workspace:^"
@@ -1257,8 +1270,13 @@ __metadata:
     "@tutora/ui": "workspace:^"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
+    "@vitejs/plugin-react": "npm:^6.2.1"
     react: "npm:^19.3.1"
     react-dom: "npm:^19.3.1"
+    tailwindcss: "npm:^4.3.4"
+    typescript: "npm:~5.9.3"
+    vite: "npm:^8.3.5"
+    vitest: "npm:^5.1.0"
   languageName: unknown
   linkType: soft
 

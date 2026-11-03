@@ -87,3 +87,21 @@ manual check against the local backend, commit as `phase-NN: …`, then stop and
 | 12 | Money views | Tutor earnings; admin disputes, release/refund, payouts, reconciliation, metrics | 8, 12, 17, 20 |
 | 13 | Group sessions | Pool invitations, group offers, per-seat payment, tutor group bids | 18, 19 |
 | 14 | Hardening and results | Playwright end-to-end journeys, accessibility pass, performance budgets, production images (static + nginx), CSP, results | 20 |
+
+## 5. Design system: editorial
+
+The three apps share one look, modelled on news and nature-magazine front pages rather than on SaaS dashboards.
+
+- **Type:** Playfair Display (black weights) for headlines, Inter for interface text; small uppercase tracked kickers above headlines.
+- **Colour:** newsprint paper (`#f5f3ee`), ink-black text, one signature yellow (`--color-brand: #ffcc00`) for buttons, kicker squares, active-nav underlines and link underlines. Red only for danger and the admin "Control room" label. Full dark mode.
+- **Structure:** black dateline strip, serif wordmark masthead with the app's section label (Learn / Teach / Control room), ruled section navigation, heavy 4px rules above every section, black footer.
+- **Art without photos:** `CoverArt` generates a deterministic cover per skill or tutor (deep natural gradients with contour-map lines), so cards read as editorial stories.
+- **Components** (`@tutora/ui`): `AppShell`, `PageHeader`, `SectionHeader`, `Kicker`, `StoryCard`, `CoverArt`, `Tag`, `StatusTag`, `Tabs`, `Pagination`, `Stat`, `Modal`, `Facts`, plus form controls (`Field`, `Textarea`, `Select`, `Button`, `buttonClass` for router links).
+- Tailwind scans `packages/ui`, `packages/core` and each app's `src`; base element styles live in `@layer base` so utilities always win.
+
+## 6. Progress
+
+| Phase | Status | Notes |
+| --- | --- | --- |
+| 0-1 | Done | |
+| 2-6 | Done | The public tutor view has no ratings or Mastery fields yet, so directory cards show badge, headline and approved skills. The shared catalog lives in `@tutora/core/catalog` and is used by the student and tutor apps (admin never imports it). |

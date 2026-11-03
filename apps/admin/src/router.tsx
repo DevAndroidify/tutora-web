@@ -9,10 +9,15 @@ import {
   useRouterState,
 } from '@tanstack/react-router';
 import { LoginForm, RequireSession, useSession, useSessionStore } from '@tutora/core';
-import { AppShell, Button } from '@tutora/ui';
+import { AppShell, Button, navLinkClass } from '@tutora/ui';
 import { useState, type ReactNode } from 'react';
 import { AccountPage } from './pages/AccountPage';
-import { HomePage } from './pages/HomePage';
+import { CaseDetailPage } from './pages/CaseDetailPage';
+import { CasesPage } from './pages/CasesPage';
+import { CatalogPage } from './pages/CatalogPage';
+import { DeskPage } from './pages/DeskPage';
+import { SuggestionsPage } from './pages/SuggestionsPage';
+import { VerificationPage } from './pages/VerificationPage';
 
 /** Only same-app paths are allowed as a post-login redirect (no open redirects). */
 export function safeRedirect(target: unknown): string {
@@ -21,9 +26,6 @@ export function safeRedirect(target: unknown): string {
   return /^\/(login|register)(\/|\?|$)/.test(target) ? '/' : target;
 }
 
-const navLink =
-  'rounded-md px-3 py-1.5 text-muted hover:text-text [&.active]:bg-bg [&.active]:text-text';
-
 function RootLayout() {
   const session = useSession();
   const store = useSessionStore();
@@ -31,14 +33,28 @@ function RootLayout() {
   const signedIn = session.status === 'signedIn';
   return (
     <AppShell
-      appName="Admin"
+      appName="Control room"
+      alertLabel
+      strip="Staff only · Every action is audited"
       nav={
         signedIn && (
           <>
-            <Link to="/" className={navLink}>
-              Home
+            <Link to="/" className={navLinkClass} activeOptions={{ exact: true }}>
+              Desk
             </Link>
-            <Link to="/account" className={navLink}>
+            <Link to="/verification" className={navLinkClass}>
+              Verification
+            </Link>
+            <Link to="/catalog" className={navLinkClass} activeOptions={{ exact: true }}>
+              Catalog
+            </Link>
+            <Link to="/catalog/suggestions" className={navLinkClass}>
+              Suggestions
+            </Link>
+            <Link to="/cases" className={navLinkClass}>
+              Trust &amp; safety
+            </Link>
+            <Link to="/account" className={navLinkClass}>
               Account
             </Link>
           </>
@@ -47,7 +63,7 @@ function RootLayout() {
       account={
         signedIn ? (
           <>
-            <span className="hidden text-muted sm:inline">{session.user.fullName}</span>
+            <span className="hidden text-muted md:inline">{session.user.fullName}</span>
             <Button
               variant="secondary"
               onClick={async () => {
@@ -58,11 +74,7 @@ function RootLayout() {
               Sign out
             </Button>
           </>
-        ) : (
-          <Link to="/login" className={navLink}>
-            Sign in
-          </Link>
-        )
+        ) : null
       }
     >
       <Outlet />
@@ -83,24 +95,57 @@ function Protected({ children }: { children: ReactNode }) {
 
 const rootRoute = createRootRoute({ component: RootLayout });
 
+const protect = (Component: () => ReactNode) =>
+  function ProtectedPage() {
+    return (
+      <Protected>
+        <Component />
+      </Protected>
+    );
+  };
+
 const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: () => (
-    <Protected>
-      <HomePage />
-    </Protected>
-  ),
+  component: protect(DeskPage),
 });
-
+const verificationRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/verification',
+  component: protect(VerificationPage),
+});
+const catalogRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/catalog',
+  component: protect(CatalogPage),
+});
+const suggestionsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/catalog/suggestions',
+  component: protect(SuggestionsPage),
+});
+const casesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/cases',
+  component: protect(CasesPage),
+});
 const accountRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/account',
-  component: () => (
-    <Protected>
-      <AccountPage />
-    </Protected>
-  ),
+  component: protect(AccountPage),
+});
+
+const caseRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/cases/$id',
+  component: function Case() {
+    const { id } = caseRoute.useParams();
+    return (
+      <Protected>
+        <CaseDetailPage id={id} />
+      </Protected>
+    );
+  },
 });
 
 const loginRoute = createRoute({
@@ -116,7 +161,7 @@ const loginRoute = createRoute({
     if (session.status === 'signedIn') return <Navigate to={safeRedirect(redirect)} />;
     return (
       <LoginForm
-        title="Sign in to Tutora Admin"
+        title="Control room sign-in"
         subtitle="Staff accounts only."
         onSuccess={() => void navigate({ to: safeRedirect(redirect) })}
       />
@@ -124,9 +169,22 @@ const loginRoute = createRoute({
   },
 });
 
-export const routeTree = rootRoute.addChildren([homeRoute, accountRoute, loginRoute]);
+export const routeTree = rootRoute.addChildren([
+  homeRoute,
+  verificationRoute,
+  catalogRoute,
+  suggestionsRoute,
+  casesRoute,
+  caseRoute,
+  accountRoute,
+  loginRoute,
+]);
 
-export const router = createRouter({ routeTree, defaultPreload: 'intent' });
+export const router = createRouter({
+  routeTree,
+  defaultPreload: 'intent',
+  scrollRestoration: true,
+});
 
 declare module '@tanstack/react-router' {
   interface Register {

@@ -14,16 +14,7 @@ export {
   useSession,
   useSessionStore,
 } from './react';
-
-/** API origin: empty in development (the Vite dev server proxies the API), set for production builds. */
-export const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL ?? '';
-
-/** Where the other member app lives, for the "switch to tutor/student" links. */
-export const APP_URLS = {
-  student: import.meta.env.VITE_STUDENT_APP_URL ?? 'http://localhost:5173',
-  tutor: import.meta.env.VITE_TUTOR_APP_URL ?? 'http://localhost:5174',
-  admin: import.meta.env.VITE_ADMIN_APP_URL ?? 'http://localhost:5175',
-} as const;
+export { API_BASE_URL, APP_URLS } from './config';
 export {
   applyFieldErrors,
   describeAuthError,
@@ -31,3 +22,6 @@ export {
   RegisterForm,
   RequireSession,
 } from './auth-ui';
+export { ReportButton, type ReportInput } from './report';
+export * from './format';
+export * from './types';

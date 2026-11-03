@@ -83,8 +83,8 @@ export function LoginForm({
   });
 
   return (
-    <Card className="mx-auto w-full max-w-md">
-      <h1 className="text-xl font-semibold">{title}</h1>
+    <Card className="mx-auto w-full max-w-md border-t-8 border-t-brand p-8">
+      <h1 className="text-3xl font-black leading-tight">{title}</h1>
       {subtitle && <p className="mt-1 text-sm text-muted">{subtitle}</p>}
       <form onSubmit={onSubmit} noValidate className="mt-6 flex flex-col gap-4">
         {notice && <Alert tone="warning">{notice}</Alert>}
@@ -148,8 +148,8 @@ export function RegisterForm({
   });
 
   return (
-    <Card className="mx-auto w-full max-w-md">
-      <h1 className="text-xl font-semibold">{title}</h1>
+    <Card className="mx-auto w-full max-w-md border-t-8 border-t-brand p-8">
+      <h1 className="text-3xl font-black leading-tight">{title}</h1>
       {subtitle && <p className="mt-1 text-sm text-muted">{subtitle}</p>}
       <form onSubmit={onSubmit} noValidate className="mt-6 flex flex-col gap-4">
         {formError && <Alert tone="danger">{formError}</Alert>}
