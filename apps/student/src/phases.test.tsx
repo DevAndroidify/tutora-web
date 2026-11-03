@@ -37,6 +37,7 @@ const draft = {
 };
 
 const server = setupServer(
+  http.get('*/student/notifications', () => HttpResponse.json([])),
   http.get('*/public/categories', () => HttpResponse.json(categories)),
   http.get('*/public/skills', ({ request }) => {
     const q = new URL(request.url).searchParams.get('q');

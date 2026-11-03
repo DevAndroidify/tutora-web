@@ -14,6 +14,7 @@ import { useSkill } from '@tutora/core/catalog';
 import { Alert, Button, Card, Facts, Kicker, Loading, SectionHeader, StatusTag } from '@tutora/ui';
 import { useRef, useState } from 'react';
 import { api } from '../api';
+import { BidsSection } from './BidsSection';
 import { RequestForm, type RequestBody } from './RequestForm';
 
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
@@ -28,12 +29,6 @@ export function RequestDetailPage({ id }: { id: string }) {
       unwrap<LearningRequest>(api.GET('/student/requests/{id}', { params: { path: { id } } })),
   });
   const skill = useSkill(request.data?.skill.slug);
-  const bids = useQuery({
-    queryKey: ['request', id, 'bids'],
-    queryFn: () =>
-      unwrap<unknown[]>(api.GET('/student/requests/{id}/bids', { params: { path: { id } } })),
-    enabled: !!request.data && request.data.status !== 'DRAFT',
-  });
 
   const done = (r: LearningRequest) => {
     qc.setQueryData(['request', id], r);
@@ -173,27 +168,10 @@ export function RequestDetailPage({ id }: { id: string }) {
                 ]}
               />
             </Card>
-            <section aria-labelledby="bids">
-              <SectionHeader id="bids" title="Sealed bids" />
-              {r.status === 'DRAFT' ? (
-                <p className="text-sm text-muted">
-                  Publish the request and verified tutors can start bidding.
-                </p>
-              ) : bids.isPending ? (
-                <Loading />
-              ) : (
-                <p className="text-sm">
-                  <span className="font-display text-4xl font-black">{bids.data?.length ?? 0}</span>{' '}
-                  <span className="text-muted">
-                    {bids.data?.length === 1 ? 'bid' : 'bids'} so far. Tutors can't see each other's
-                    prices.
-                  </span>
-                </p>
-              )}
-            </section>
           </aside>
         </div>
       )}
+      {!editing && r.status !== 'DRAFT' && <BidsSection request={r} />}
     </article>
   );
 }

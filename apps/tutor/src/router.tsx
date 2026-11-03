@@ -12,6 +12,7 @@ import { unwrap } from '@tutora/api-client';
 import {
   APP_URLS,
   LoginForm,
+  NotificationBell,
   RegisterForm,
   ReportButton,
   RequireSession,
@@ -28,8 +29,13 @@ import {
 } from '@tutora/core/catalog';
 import { AppShell, Button, buttonClass, navLinkClass } from '@tutora/ui';
 import { useState, type ReactNode } from 'react';
-import { api } from './api';
+import { api, notificationsApi } from './api';
 import { AccountPage } from './pages/AccountPage';
+import { BidsPage } from './pages/BidsPage';
+import { MarketplacePage } from './pages/MarketplacePage';
+import { MarketRequestPage } from './pages/MarketRequestPage';
+import { SessionPage } from './pages/SessionPage';
+import { SessionsPage } from './pages/SessionsPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { ProfilePage } from './pages/ProfilePage';
 
@@ -56,6 +62,15 @@ function RootLayout() {
               <Link to="/" className={navLinkClass} activeOptions={{ exact: true }}>
                 Desk
               </Link>
+              <Link to="/requests" className={navLinkClass}>
+                Requests
+              </Link>
+              <Link to="/bids" className={navLinkClass}>
+                My bids
+              </Link>
+              <Link to="/sessions" className={navLinkClass}>
+                Sessions
+              </Link>
               <Link to="/profile" className={navLinkClass}>
                 Profile &amp; skills
               </Link>
@@ -63,9 +78,6 @@ function RootLayout() {
           )}
           <Link to="/explore" className={navLinkClass}>
             Skills
-          </Link>
-          <Link to="/tutors" className={navLinkClass}>
-            Tutors
           </Link>
           {signedIn && (
             <Link to="/account" className={navLinkClass}>
@@ -81,6 +93,15 @@ function RootLayout() {
               Learn on Tutora
             </a>
             <span className="hidden text-muted md:inline">{session.user.fullName}</span>
+            <NotificationBell
+              api={notificationsApi}
+              onOpen={(n) => {
+                if (n.data.sessionId)
+                  void navigate({ to: '/sessions/$id', params: { id: n.data.sessionId } });
+                else if (n.data.requestId)
+                  void navigate({ to: '/requests/$id', params: { id: n.data.requestId } });
+              }}
+            />
             <Button
               variant="secondary"
               onClick={async () => {
@@ -220,6 +241,62 @@ const tutorRoute = createRoute({
   },
 });
 
+const marketRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/requests',
+  component: () => (
+    <Protected>
+      <MarketplacePage />
+    </Protected>
+  ),
+});
+
+const marketRequestRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/requests/$id',
+  component: function MarketRequest() {
+    const { id } = marketRequestRoute.useParams();
+    return (
+      <Protected>
+        <MarketRequestPage id={id} />
+      </Protected>
+    );
+  },
+});
+
+const bidsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bids',
+  component: () => (
+    <Protected>
+      <BidsPage />
+    </Protected>
+  ),
+});
+
+const sessionsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/sessions',
+  component: () => (
+    <Protected>
+      <SessionsPage />
+    </Protected>
+  ),
+});
+
+const sessionRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/sessions/$id',
+  component: function Session() {
+    const { id } = sessionRoute.useParams();
+    return (
+      <Protected>
+        <SessionPage id={id} />
+      </Protected>
+    );
+  },
+});
+
 const accountRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/account',
@@ -287,6 +364,11 @@ const registerRoute = createRoute({
 export const routeTree = rootRoute.addChildren([
   homeRoute,
   profileRoute,
+  marketRoute,
+  marketRequestRoute,
+  bidsRoute,
+  sessionsRoute,
+  sessionRoute,
   exploreRoute,
   skillRoute,
   tutorsRoute,

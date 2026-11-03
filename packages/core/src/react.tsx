@@ -1,6 +1,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ApiError } from '@tutora/api-client';
 import { createContext, useContext, useEffect, useSyncExternalStore, type ReactNode } from 'react';
+import { ToastProvider } from './notifications';
+import { RealtimeProvider, type RealtimeClient } from './realtime';
 import type { SessionState, SessionStore } from './session';
 
 const SessionContext = createContext<SessionStore | null>(null);
@@ -23,18 +25,24 @@ export function createQueryClient(): QueryClient {
 export function AppProviders({
   session,
   queryClient,
+  realtime,
   children,
 }: {
   session: SessionStore;
   queryClient: QueryClient;
+  /** Optional: live updates over Socket.IO (tests usually leave it out). */
+  realtime?: RealtimeClient;
   children: ReactNode;
 }) {
   useEffect(() => {
     if (session.getState().status === 'loading') void session.restore();
   }, [session]);
+  const inner = <ToastProvider>{children}</ToastProvider>;
   return (
     <SessionContext.Provider value={session}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        {realtime ? <RealtimeProvider client={realtime}>{inner}</RealtimeProvider> : inner}
+      </QueryClientProvider>
     </SessionContext.Provider>
   );
 }

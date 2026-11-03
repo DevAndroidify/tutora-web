@@ -21,7 +21,10 @@ export function useMyProfile() {
 /** Steps to verification, in order, for the dashboard checklist. */
 export function onboardingSteps(p: TutorProfile | null) {
   return [
-    { label: 'Write your profile', done: !!p?.headline && !!p.bio },
+    {
+      label: 'Write your profile (bio of 30+ characters)',
+      done: !!p?.headline && (p.bio?.trim().length ?? 0) >= 30,
+    },
     { label: 'Add a payout UPI ID', done: !!p?.payoutUpiId },
     { label: 'List at least one skill with evidence', done: (p?.skills.length ?? 0) > 0 },
     { label: 'Submit for review', done: !!p && p.verificationStatus !== 'NOT_SUBMITTED' },

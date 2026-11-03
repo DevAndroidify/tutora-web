@@ -26,6 +26,7 @@ const tokens = {
 };
 
 const server = setupServer(
+  http.get('*/tutor/notifications', () => HttpResponse.json([])),
   http.post('*/tutor/auth/login', async ({ request }) => {
     const body = (await request.json()) as { email: string; password: string };
     if (body.password !== 'correct-horse-battery') {

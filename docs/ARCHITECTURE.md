@@ -105,3 +105,4 @@ The three apps share one look, modelled on news and nature-magazine front pages 
 | --- | --- | --- |
 | 0-1 | Done | |
 | 2-6 | Done | The public tutor view has no ratings or Mastery fields yet, so directory cards show badge, headline and approved skills. The shared catalog lives in `@tutora/core/catalog` and is used by the student and tutor apps (admin never imports it). |
+| 7-11 | Done | Marketplace and sealed bids, ranked bids and test-mode UPI checkout, realtime + notifications, LiveKit room (verified with two real browsers), replay, notes, quiz, review, dispute. |

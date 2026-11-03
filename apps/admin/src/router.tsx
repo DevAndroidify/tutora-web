@@ -11,6 +11,7 @@ import {
 import { LoginForm, RequireSession, useSession, useSessionStore } from '@tutora/core';
 import { AppShell, Button, navLinkClass } from '@tutora/ui';
 import { useState, type ReactNode } from 'react';
+import { AdminLive } from './live';
 import { AccountPage } from './pages/AccountPage';
 import { CaseDetailPage } from './pages/CaseDetailPage';
 import { CasesPage } from './pages/CasesPage';
@@ -63,6 +64,7 @@ function RootLayout() {
       account={
         signedIn ? (
           <>
+            <AdminLive />
             <span className="hidden text-muted md:inline">{session.user.fullName}</span>
             <Button
               variant="secondary"

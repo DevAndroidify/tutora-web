@@ -1,6 +1,7 @@
 import { createApiClient, unwrap, type AdminPaths } from '@tutora/api-client';
 import {
   API_BASE_URL,
+  RealtimeClient,
   SessionStore,
   type AuthResult,
   type SessionUser,
@@ -25,3 +26,6 @@ session.attach({
   },
   me: () => unwrap<SessionUser>(api.GET('/admin/me')),
 });
+
+/** Live updates: new cases, case changes, disputes and payment alerts. */
+export const realtime = new RealtimeClient(session);

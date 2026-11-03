@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./catalog": "./src/catalog.tsx"
+    "./catalog": "./src/catalog.tsx",
+    "./live": "./src/live.tsx"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json"
@@ -16,9 +17,11 @@
     "@tanstack/react-router": "^1.170.46",
     "@tutora/api-client": "workspace:^",
     "@tutora/ui": "workspace:^",
+    "livekit-client": "^2.23.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-hook-form": "^7.91.0",
+    "socket.io-client": "^4.8.4",
     "zod": "^4.6.7"
   },
   "devDependencies": {

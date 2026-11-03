@@ -55,7 +55,13 @@ export interface PublicTutor {
   experienceYears: number | null;
   languages: string[];
   badge: Badge;
-  skills: Array<{ skill: Skill; experienceYears: number | null; summary: string }>;
+  skills: Array<{
+    skill: Skill;
+    experienceYears: number | null;
+    summary: string;
+    mastery?: { skillId: string; score: number | null; label: string; attempts: number };
+  }>;
+  rating?: { average: number | null; count: number };
 }
 
 export interface TutorSkillClaim {
@@ -229,3 +235,197 @@ export interface CaseDetail {
   }>;
   sanctions: Sanction[];
 }
+
+// ---------- marketplace and bids ----------
+
+export type BidStatus = 'SUBMITTED' | 'ACCEPTED' | 'HELD' | 'WITHDRAWN' | 'EXPIRED' | 'REJECTED';
+
+export interface Bid {
+  id: string;
+  requestId: string;
+  seatPricePaise: number;
+  currency: string;
+  proposedStartAt: string;
+  durationMinutes: number;
+  approachText: string | null;
+  hasApproachMedia: boolean;
+  status: BidStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** A request as an eligible tutor sees it: learner shown by first name + initial, bids by count only. */
+export interface MarketRequest extends LearningRequest {
+  studentDisplayName: string;
+  bidCount: number;
+  myBid?: Bid | null;
+}
+
+export interface ScoreComponent {
+  key: string;
+  label: string;
+  weight: number;
+  value: number;
+  placeholder: boolean;
+  note: string | null;
+}
+
+/** A bid as the learner who owns the request sees it, with the ranking explained. */
+export interface RankedBid extends Bid {
+  tutor: { userId: string; badge: Badge; headline: string | null; fullName: string };
+  approachMediaUrl: string | null;
+  score: { total: number; components: ScoreComponent[] };
+}
+
+// ---------- bookings, payments, sessions ----------
+
+export type SessionStatus =
+  'PENDING_PAYMENT' | 'SCHEDULED' | 'LIVE' | 'ENDED' | 'COMPLETED' | 'CANCELLED' | 'EXPIRED';
+
+/** One seat in a session (from /student/sessions, /tutor/sessions and bid acceptance). */
+export interface SessionSeat {
+  sessionId: string;
+  participantId: string;
+  requestId: string;
+  bidId: string;
+  tutorUserId: string;
+  sessionStatus: SessionStatus | string;
+  participantStatus: string;
+  startsAt: string;
+  durationMinutes: number;
+  amountPaise: number;
+  currency: string;
+  paymentDueAt: string | null;
+}
+
+export type Checkout =
+  | {
+      provider: 'fake';
+      simulatePaymentUrl: string;
+      orderId: string;
+      amount: number;
+      currency: 'INR';
+    }
+  | {
+      provider: 'razorpay';
+      keyId: string;
+      checkoutOptions?: Record<string, unknown>;
+      orderId: string;
+      amount: number;
+      currency: 'INR';
+    };
+
+export interface Payment {
+  id: string;
+  participantId: string;
+  provider: 'fake' | 'razorpay';
+  status: 'INITIATED' | 'HELD' | 'FAILED' | 'RELEASED' | 'REFUNDED' | string;
+  amountPaise: number;
+  currency: string;
+  providerOrderId: string;
+  failureReason: string | null;
+  refundReason: string | null;
+  createdAt: string;
+  checkout?: Checkout;
+}
+
+export interface JoinToken {
+  token: string;
+  /** LiveKit websocket URL. */
+  url: string;
+  room: string;
+  identity: string;
+  expiresAt: string;
+}
+
+export interface RecordingView {
+  sessionId: string;
+  status: 'NOT_RECORDED' | 'RECORDING' | 'PROCESSING' | 'READY' | 'FAILED' | 'DELETED' | string;
+  consents: Array<{ userId: string; role: 'TUTOR' | 'STUDENT'; granted: boolean | null }>;
+  url: string | null;
+  deleteAfter: string | null;
+}
+
+export interface AttendanceRow {
+  identity: string;
+  role: 'TUTOR' | 'STUDENT';
+  userId: string;
+  firstJoinedAt: string;
+  seconds: number;
+}
+
+export interface TranscriptSegment {
+  startMs: number;
+  endMs: number;
+  speaker: string | null;
+  text: string;
+}
+
+export interface ReplayAsset<T> {
+  status: string;
+  source: 'TUTOR' | 'GENERATED';
+  provider: string | null;
+  model: string | null;
+  content: T;
+}
+
+export interface Replay {
+  sessionId: string;
+  recording: RecordingView;
+  transcript: { status: string; segments: TranscriptSegment[] };
+  notes: ReplayAsset<{ summary: string; keyPoints: Array<{ text: string; atMs: number }> }> | null;
+  flashcards: ReplayAsset<{ cards: Array<{ front: string; back: string; atMs: number }> }> | null;
+  whiteboard: Array<{ id?: string; url?: string | null; createdAt?: string }>;
+}
+
+export interface ReplaySearch {
+  sessionId: string;
+  q: string;
+  /** `snippet` marks matches with [[ ]]. */
+  results: Array<TranscriptSegment & { snippet?: string }>;
+}
+
+export interface Quiz {
+  id: string;
+  sessionId: string;
+  kind: string;
+  mode: string;
+  status: 'OPEN' | 'SUBMITTED' | 'EXPIRED' | string;
+  availableAt: string;
+  dueAt: string;
+  questions: Array<{ id: string; prompt: string; options: string[] }>;
+  result: { correct: number; total: number; passed: boolean } | null;
+}
+
+export const DISPUTE_REASONS = {
+  TUTOR_ABSENT_OR_LATE: 'Tutor was absent or very late',
+  POOR_QUALITY: 'Poor quality',
+  NOT_AS_DESCRIBED: 'Not what the bid described',
+  TECHNICAL_ISSUES: 'Technical problems',
+  MISCONDUCT: 'Misconduct',
+  OTHER: 'Something else',
+} as const;
+export type DisputeReason = keyof typeof DISPUTE_REASONS;
+
+export interface Dispute {
+  id: string;
+  sessionId: string;
+  reason: DisputeReason;
+  details: string | null;
+  status: string;
+  resolutionNote: string | null;
+  openedAt: string;
+  resolvedAt: string | null;
+}
+
+export interface AppNotification {
+  id: string;
+  type: string;
+  title: string;
+  body: string;
+  data: Record<string, string | undefined>;
+  readAt: string | null;
+  createdAt: string;
+}
+
+export type LiveMode = 'FULL_VIDEO' | 'AUDIO_ONLY' | 'WHITEBOARD_ONLY';

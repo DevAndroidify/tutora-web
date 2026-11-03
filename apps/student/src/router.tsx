@@ -12,6 +12,7 @@ import { unwrap } from '@tutora/api-client';
 import {
   APP_URLS,
   LoginForm,
+  NotificationBell,
   RegisterForm,
   ReportButton,
   RequireSession,
@@ -28,12 +29,14 @@ import {
 } from '@tutora/core/catalog';
 import { AppShell, Button, buttonClass, navLinkClass } from '@tutora/ui';
 import { useState, type ReactNode } from 'react';
-import { api } from './api';
+import { api, notificationsApi } from './api';
 import { AccountPage } from './pages/AccountPage';
 import { HomePage } from './pages/HomePage';
 import { NewRequestPage } from './pages/NewRequestPage';
 import { RequestDetailPage } from './pages/RequestDetailPage';
 import { RequestsPage } from './pages/RequestsPage';
+import { SessionPage } from './pages/SessionPage';
+import { SessionsPage } from './pages/SessionsPage';
 
 /** Only same-app paths are allowed as a post-login redirect (no open redirects). */
 export function safeRedirect(target: unknown): string {
@@ -67,6 +70,9 @@ function RootLayout() {
               <Link to="/requests" className={navLinkClass}>
                 My requests
               </Link>
+              <Link to="/sessions" className={navLinkClass}>
+                Sessions
+              </Link>
               <Link to="/account" className={navLinkClass}>
                 Account
               </Link>
@@ -81,6 +87,15 @@ function RootLayout() {
               Teach on Tutora
             </a>
             <span className="hidden text-muted md:inline">{session.user.fullName}</span>
+            <NotificationBell
+              api={notificationsApi}
+              onOpen={(n) => {
+                if (n.data.sessionId)
+                  void navigate({ to: '/sessions/$id', params: { id: n.data.sessionId } });
+                else if (n.data.requestId)
+                  void navigate({ to: '/requests/$id', params: { id: n.data.requestId } });
+              }}
+            />
             <Button
               variant="secondary"
               onClick={async () => {
@@ -244,6 +259,29 @@ const requestRoute = createRoute({
   },
 });
 
+const sessionsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/sessions',
+  component: () => (
+    <Protected>
+      <SessionsPage />
+    </Protected>
+  ),
+});
+
+const sessionRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/sessions/$id',
+  component: function Session() {
+    const { id } = sessionRoute.useParams();
+    return (
+      <Protected>
+        <SessionPage id={id} />
+      </Protected>
+    );
+  },
+});
+
 const accountRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/account',
@@ -317,6 +355,8 @@ export const routeTree = rootRoute.addChildren([
   requestsRoute,
   newRequestRoute,
   requestRoute,
+  sessionsRoute,
+  sessionRoute,
   accountRoute,
   loginRoute,
   registerRoute,

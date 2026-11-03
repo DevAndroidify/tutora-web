@@ -26,6 +26,7 @@ const profile = {
 let putSkillBody: unknown = null;
 
 const server = setupServer(
+  http.get('*/tutor/notifications', () => HttpResponse.json([])),
   http.post('*/tutor/auth/login', () => HttpResponse.json({ ...tokens, user: member })),
   http.post('*/tutor/auth/logout', () => new HttpResponse(null, { status: 204 })),
   http.get('*/tutor/profile', () => HttpResponse.json(profile)),

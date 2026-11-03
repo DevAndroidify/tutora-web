@@ -143,6 +143,28 @@ function QueryError({ error }: { error: Error }) {
   );
 }
 
+/** "★ 4.8 (12)" or "New" when nobody has rated yet. */
+function Rating({ rating }: { rating: PublicTutor['rating'] }) {
+  if (!rating || !rating.count || rating.average === null) {
+    return (
+      <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted">
+        No ratings yet
+      </span>
+    );
+  }
+  return (
+    <span
+      className="text-sm font-bold"
+      aria-label={`Rated ${rating.average.toFixed(1)} out of 5 from ${rating.count} reviews`}
+    >
+      <span className="text-brand" aria-hidden>
+        ★
+      </span>{' '}
+      {rating.average.toFixed(1)} <span className="font-normal text-muted">({rating.count})</span>
+    </span>
+  );
+}
+
 function BadgeTag({ badge }: { badge: PublicTutor['badge'] }) {
   if (badge === 'EXPERT') return <Tag tone="dark">Expert</Tag>;
   if (badge === 'VERIFIED') return <Tag tone="brand">Verified</Tag>;
@@ -185,6 +207,7 @@ function TutorCard({ tutor }: { tutor: PublicTutor }) {
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="story-title text-lg font-black leading-tight">{tutor.fullName}</h3>
           <BadgeTag badge={tutor.badge} />
+          <Rating rating={tutor.rating} />
         </div>
         {tutor.headline && <p className="mt-1 text-sm text-muted">{tutor.headline}</p>}
         <p className="mt-2 text-[11px] font-bold uppercase tracking-[0.12em] text-muted">
@@ -549,6 +572,7 @@ export function TutorPage({
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <Kicker>Tutor profile</Kicker>
             <BadgeTag badge={t.badge} />
+            <Rating rating={t.rating} />
           </div>
           <h1 className="text-5xl font-black leading-[1.02]">{t.fullName}</h1>
           {t.headline && <p className="mt-3 font-display text-xl text-muted">{t.headline}</p>}
@@ -583,6 +607,12 @@ export function TutorPage({
               >
                 {s.skill.name}
               </Link>
+              {s.mastery && (
+                <p className="mt-1 text-xs font-bold uppercase tracking-[0.12em]">
+                  Teaching outcomes: <span className="text-text">{s.mastery.label}</span>
+                  {s.mastery.score !== null ? ` · ${Math.round(s.mastery.score * 100)}%` : ''}
+                </p>
+              )}
               {s.experienceYears ? (
                 <p className="mt-1 text-xs font-bold uppercase tracking-[0.12em] text-muted">
                   {s.experienceYears} years

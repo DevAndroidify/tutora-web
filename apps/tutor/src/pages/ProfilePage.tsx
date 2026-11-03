@@ -167,7 +167,7 @@ function ProfileForm({ profile }: { profile: TutorProfile | null }) {
           value={bio}
           maxLength={2000}
           onChange={(e) => setBio(e.target.value)}
-          hint="Your experience, how you teach, who you teach best."
+          hint="At least 30 characters before you can submit for review. Your experience, how you teach, who you teach best."
           error={fieldErr(err, 'bio')}
         />
         <div className="grid gap-6 md:grid-cols-3">
