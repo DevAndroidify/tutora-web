@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+.env
+.env.local
+*.log
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+.pnp.*
+playwright-report/
+test-results/
+*:Zone.Identifier
