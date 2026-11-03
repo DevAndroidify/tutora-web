@@ -1,0 +1,6 @@
+@import '@tutora/ui/styles.css';
+@source '.';
+
+@theme {
+  --color-accent: #0f8a6a;
+}

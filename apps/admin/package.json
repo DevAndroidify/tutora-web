@@ -1,0 +1,25 @@
+{
+  "name": "@tutora/admin-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.105.3",
+    "@tanstack/react-router": "^1.170.46",
+    "@tutora/api-client": "workspace:^",
+    "@tutora/core": "workspace:^",
+    "@tutora/ui": "workspace:^",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19"
+  }
+}
