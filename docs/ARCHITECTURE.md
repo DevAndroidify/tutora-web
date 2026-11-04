@@ -107,3 +107,46 @@ The three apps share one look, modelled on news and nature-magazine front pages 
 | 2-6 | Done | The public tutor view has no ratings or Mastery fields yet, so directory cards show badge, headline and approved skills. The shared catalog lives in `@tutora/core/catalog` and is used by the student and tutor apps (admin never imports it). |
 | 7-11 | Done | Marketplace and sealed bids, ranked bids and test-mode UPI checkout, realtime + notifications, LiveKit room (verified with two real browsers), replay, notes, quiz, review, dispute. |
 | 12-13 | Done | Tutor earnings (Earnings page) and admin Money (payments with early release/refund, payouts against `tutor_payable:<id>` ledger balances, books + on-demand reconciliation, low-bandwidth metrics) and Disputes (attendance, audited recording view, release/refund with a note). Groups: learner invitations, group offers with seat limits, per-seat checkout reusing the normal Checkout; tutors bid a seat price with min/max seats. Modal now keeps focus where the user is typing and traps Tab. |
+| 14 | Done | See section 7. |
+
+## 7. Results (Phase 14)
+
+**End-to-end (Playwright, real backend, real browsers; `e2e/`):** all 11 tests in 6 specs pass. They cover:
+- the money path across all three apps: request, sealed bid seen live, test-mode UPI payment, admin early release, UPI payout, tutor earnings, balanced books;
+- group sessions, from invitation to two paid seats;
+- the live room with two browsers on fake camera and microphone, with real video decoded on the other side, audio-only switch and leave;
+- axe WCAG 2.1 A/AA on 30 pages (no serious or critical findings);
+- focus trap and Escape on dialogs;
+- no horizontal scroll at 360px;
+- a production-image smoke test (headers, zero CSP violations while signed in, socket handshake, `/dev` blocked).
+
+**Bugs the end-to-end pass found and fixed:**
+- **Live room:** the room reused one LiveKit `Room` across effect runs. Under StrictMode, the first run's cleanup disconnected the second run, so users were sent back to the pre-join screen. The fix is one `Room` per attempt, and disconnects from cancelled attempts are ignored.
+- **Modal focus:** `Modal` re-focused its first control on every render, so typing a space in a dialog's text field could close it. Focus now moves only on open and is restored on close, and Tab is trapped inside the dialog.
+- **Admin dev proxy:** the admin dev proxy did not forward `/public/`.
+
+**Performance budgets (`yarn budgets`, gzip):** route-level code splitting (`lazyPage`) and moving the sign-in forms (with zod/mini) into their own chunk brought initial JavaScript from 177–186 kB down to:
+
+| App | Initial JS before | Initial JS after | Budget |
+| --- | --- | --- | --- |
+| Student | 177 kB | 138 kB | 150 kB |
+| Tutor | 186 kB | 137 kB | 150 kB |
+| Admin | 185 kB | 126 kB | 140 kB |
+
+- CSS is about 6.4 kB per app, against a 10 kB budget.
+- The LiveKit room is 137 kB and loads only when someone joins (budget for any lazy chunk: 160 kB).
+- CI fails if any budget is exceeded.
+
+**Production:** one nginx image per app, described in `docker/README.md`.
+- Runs as a non-root user and is about 95 MB.
+- Proxies the API per app area and resolves the backend at request time.
+- Sets a CSP and security headers.
+- Caches hashed assets for a year.
+- Never exposes `/dev`.
+
+CI (`.github/workflows/ci.yml`) runs lint, typecheck, unit tests, build and budgets, and builds the three images. The end-to-end tests run locally against the backend; see `e2e/README.md`.
+
+**Not verified here:**
+- Razorpay with real test keys. The fake provider is used throughout; the CSP allows Razorpay Checkout's documented origins.
+- Recording, Egress and transcripts, which need LiveKit Egress and storage in a deployed setting.
+- TLS and HSTS, which belong at the load balancer.

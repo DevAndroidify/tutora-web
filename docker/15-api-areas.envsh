@@ -1,0 +1,9 @@
+#!/bin/sh
+# Sourced by the nginx entrypoint before templates are rendered: each app proxies only its own API
+# area (plus the public catalog), so e.g. the admin site never forwards /student/ requests.
+case "${APP:-}" in
+  student) export API_AREAS='student|public' ;;
+  tutor) export API_AREAS='tutor|public' ;;
+  admin) export API_AREAS='admin|public' ;;
+  *) echo "APP must be student, tutor or admin (got '${APP:-}')" >&2; exit 1 ;;
+esac

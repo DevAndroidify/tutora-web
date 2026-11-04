@@ -195,13 +195,21 @@ export interface LiveRoomProps {
 }
 
 export default function LiveRoom({ sessionId, token, api, nameFor, onLeave }: LiveRoomProps) {
-  const [room] = useState(() => new Room({ adaptiveStream: true, dynacast: true }));
+  // One Room per connection attempt. Reusing a single Room across effect runs (React StrictMode
+  // runs effects twice in development) lets the first run's disconnect tear down the second.
+  const [room, setRoom] = useState<Room | null>(null);
+  const roomRef = useRef<Room | null>(null);
+  const onLeaveRef = useRef(onLeave);
+  useEffect(() => {
+    onLeaveRef.current = onLeave;
+  });
   const [version, setVersion] = useState(0);
   const [state, setState] = useState<'connecting' | 'connected' | 'reconnecting' | 'failed'>(
     'connecting',
   );
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<LiveMode>('FULL_VIDEO');
+  const modeRef = useRef<LiveMode>('FULL_VIDEO');
   const [notice, setNotice] = useState<string | null>(null);
   const [mic, setMic] = useState(true);
   const boardUsed = useRef(false);
@@ -223,6 +231,9 @@ export default function LiveRoom({ sessionId, token, api, nameFor, onLeave }: Li
 
   const applyMode = useCallback(
     async (next: LiveMode, reason: 'manual' | 'auto') => {
+      const room = roomRef.current;
+      if (!room) return;
+      modeRef.current = next;
       setMode(next);
       const video = next === 'FULL_VIDEO';
       await room.localParticipant.setCameraEnabled(video).catch(() => undefined);
@@ -236,10 +247,17 @@ export default function LiveRoom({ sessionId, token, api, nameFor, onLeave }: Li
         .modeEvent(sessionId, { mode: next, downlinkKbps: downlinkKbps(), reason })
         .catch(() => undefined);
     },
-    [api, bump, room, sessionId],
+    [api, bump, sessionId],
   );
 
   useEffect(() => {
+    const room = new Room({ adaptiveStream: true, dynacast: true });
+    roomRef.current = room;
+    let cancelled = false;
+    // Render this attempt's room (deferred: the effect only wires up the external object).
+    queueMicrotask(() => {
+      if (!cancelled) setRoom(room);
+    });
     const events = [
       RoomEvent.ParticipantConnected,
       RoomEvent.ParticipantDisconnected,
@@ -254,14 +272,16 @@ export default function LiveRoom({ sessionId, token, api, nameFor, onLeave }: Li
     events.forEach((e) => room.on(e, bump));
     room.on(RoomEvent.Reconnecting, () => setState('reconnecting'));
     room.on(RoomEvent.Reconnected, () => setState('connected'));
-    room.on(RoomEvent.Disconnected, () => onLeave());
+    // Only a disconnect of the live attempt counts (not one we started in cleanup).
+    room.on(RoomEvent.Disconnected, () => {
+      if (!cancelled) onLeaveRef.current();
+    });
     room.on(RoomEvent.ConnectionQualityChanged, (q: ConnectionQuality, p: Participant) => {
-      if (p.isLocal && q === ConnectionQuality.Poor && mode === 'FULL_VIDEO') {
+      if (p.isLocal && q === ConnectionQuality.Poor && modeRef.current === 'FULL_VIDEO') {
         setNotice('Your connection is weak, so we switched to audio only. Switch back any time.');
         void applyMode('AUDIO_ONLY', 'auto');
       }
     });
-    let cancelled = false;
     (async () => {
       try {
         await room.connect(token.url, token.token);
@@ -291,10 +311,11 @@ export default function LiveRoom({ sessionId, token, api, nameFor, onLeave }: Li
       cancelled = true;
       room.removeAllListeners();
       void room.disconnect();
+      if (roomRef.current === room) roomRef.current = null;
     };
-    // Connect once per mount.
+    // Connect once per token.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [room, token.token, token.url]);
+  }, [token.token, token.url]);
 
   const leave = async () => {
     if (boardUsed.current) {
@@ -304,9 +325,19 @@ export default function LiveRoom({ sessionId, token, api, nameFor, onLeave }: Li
         canvas && (await new Promise<Blob | null>((res) => canvas.toBlob(res, 'image/png')));
       if (blob) await saveSnapshot(blob, true).catch(() => undefined);
     }
-    await room.disconnect();
+    const r = roomRef.current;
+    r?.removeAllListeners();
+    await r?.disconnect();
     onLeave();
   };
+
+  if (!room) {
+    return (
+      <section aria-label="Live session" className="bg-night p-6 text-white">
+        <Tag tone="warning">connecting</Tag>
+      </section>
+    );
+  }
 
   const everyone: Participant[] = [
     room.localParticipant,

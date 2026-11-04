@@ -8,19 +8,22 @@ import {
   useNavigate,
   useRouterState,
 } from '@tanstack/react-router';
-import { LoginForm, RequireSession, useSession, useSessionStore } from '@tutora/core';
-import { AppShell, Button, navLinkClass } from '@tutora/ui';
-import { useState, type ReactNode } from 'react';
+import { lazyPage, RequireSession, useSession, useSessionStore } from '@tutora/core';
+import { AppShell, Button, Loading, navLinkClass } from '@tutora/ui';
+import { Suspense, useState, type ComponentType, type ReactNode } from 'react';
 import { AdminLive } from './live';
-import { AccountPage } from './pages/AccountPage';
-import { CaseDetailPage } from './pages/CaseDetailPage';
-import { CasesPage } from './pages/CasesPage';
-import { CatalogPage } from './pages/CatalogPage';
-import { DeskPage } from './pages/DeskPage';
-import { DisputesPage } from './pages/DisputesPage';
-import { MoneyPage, type MoneyTab } from './pages/MoneyPage';
-import { SuggestionsPage } from './pages/SuggestionsPage';
-import { VerificationPage } from './pages/VerificationPage';
+import type { MoneyTab } from './pages/MoneyPage';
+
+const AccountPage = lazyPage(() => import('./pages/AccountPage'), 'AccountPage');
+const CaseDetailPage = lazyPage(() => import('./pages/CaseDetailPage'), 'CaseDetailPage');
+const CasesPage = lazyPage(() => import('./pages/CasesPage'), 'CasesPage');
+const CatalogPage = lazyPage(() => import('./pages/CatalogPage'), 'CatalogPage');
+const DeskPage = lazyPage(() => import('./pages/DeskPage'), 'DeskPage');
+const DisputesPage = lazyPage(() => import('./pages/DisputesPage'), 'DisputesPage');
+const MoneyPage = lazyPage(() => import('./pages/MoneyPage'), 'MoneyPage');
+const SuggestionsPage = lazyPage(() => import('./pages/SuggestionsPage'), 'SuggestionsPage');
+const VerificationPage = lazyPage(() => import('./pages/VerificationPage'), 'VerificationPage');
+const LoginForm = lazyPage(() => import('@tutora/core/auth-forms'), 'LoginForm');
 
 /** Only same-app paths are allowed as a post-login redirect (no open redirects). */
 export function safeRedirect(target: unknown): string {
@@ -87,7 +90,9 @@ function RootLayout() {
         ) : null
       }
     >
-      <Outlet />
+      <Suspense fallback={<Loading />}>
+        <Outlet />
+      </Suspense>
     </AppShell>
   );
 }
@@ -105,7 +110,7 @@ function Protected({ children }: { children: ReactNode }) {
 
 const rootRoute = createRootRoute({ component: RootLayout });
 
-const protect = (Component: () => ReactNode) =>
+const protect = (Component: ComponentType) =>
   function ProtectedPage() {
     return (
       <Protected>

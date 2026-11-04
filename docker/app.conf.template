@@ -1,0 +1,65 @@
+# Rendered by the nginx entrypoint (envsubst) into /etc/nginx/conf.d/app.conf.
+# ${APP}: student | tutor | admin. ${API_AREAS}: set by 15-api-areas.envsh.
+# ${CSP_CONNECT_EXTRA}: space-separated origins the browser must reach directly (LiveKit wss://,
+# object storage for presigned uploads). ${CSP_MEDIA_EXTRA}: origins serving recordings/snapshots.
+
+server {
+  listen ${PORT};
+  server_name _;
+  root /usr/share/nginx/html;
+
+  # Resolve the API at request time (it may start after this container, or move).
+  resolver ${NGINX_LOCAL_RESOLVERS} valid=10s ipv6=off;
+  set $api_upstream ${API_UPSTREAM};
+
+  # All headers live here: nginx drops inherited add_header lines in any location that adds its
+  # own, so locations below only use `expires` for caching.
+  add_header Content-Security-Policy "default-src 'self'; script-src 'self' https://checkout.razorpay.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https: ${CSP_MEDIA_EXTRA}; media-src 'self' blob: ${CSP_MEDIA_EXTRA}; connect-src 'self' https://api.razorpay.com https://lumberjack.razorpay.com ${CSP_CONNECT_EXTRA}; frame-src https://api.razorpay.com https://checkout.razorpay.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" always;
+  add_header X-Content-Type-Options "nosniff" always;
+  add_header X-Frame-Options "DENY" always;
+  add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+  add_header Permissions-Policy "camera=(self), microphone=(self), display-capture=(), geolocation=(), payment=(self \"https://api.razorpay.com\")" always;
+  add_header Cross-Origin-Opener-Policy "same-origin-allow-popups" always;
+
+  location = /healthz {
+    access_log off;
+    default_type text/plain;
+    return 200 "ok\n";
+  }
+
+  # This app's API area + the public catalog, and the realtime socket (WebSocket upgrade).
+  location ~ ^/(${API_AREAS})/ {
+    proxy_pass $api_upstream;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Request-Id $request_id;
+    client_max_body_size 2m;
+  }
+  location /socket.io/ {
+    proxy_pass $api_upstream;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $connection_upgrade;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_read_timeout 1h;
+  }
+  # Development-only routes (fake UPI simulator) are never exposed by the production image.
+  location ^~ /dev/ {
+    return 404;
+  }
+
+  # Hashed build output never changes: cache for a year.
+  location /assets/ {
+    expires max;
+    try_files $uri =404;
+  }
+
+  # Client-side routes fall back to index.html, which must always be revalidated.
+  location / {
+    expires -1;
+    try_files $uri /index.html;
+  }
+}

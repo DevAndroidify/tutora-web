@@ -11,10 +11,9 @@ import {
 import { unwrap } from '@tutora/api-client';
 import {
   APP_URLS,
-  LoginForm,
   NotificationBell,
-  RegisterForm,
   ReportButton,
+  lazyPage,
   RequireSession,
   useSession,
   useSessionStore,
@@ -27,17 +26,20 @@ import {
   validateExploreSearch,
   validateTutorsSearch,
 } from '@tutora/core/catalog';
-import { AppShell, Button, buttonClass, navLinkClass } from '@tutora/ui';
-import { useState, type ReactNode } from 'react';
+import { AppShell, Button, buttonClass, Loading, navLinkClass } from '@tutora/ui';
+import { Suspense, useState, type ReactNode } from 'react';
 import { api, notificationsApi } from './api';
-import { AccountPage } from './pages/AccountPage';
-import { GroupsPage } from './pages/GroupsPage';
-import { HomePage } from './pages/HomePage';
-import { NewRequestPage } from './pages/NewRequestPage';
-import { RequestDetailPage } from './pages/RequestDetailPage';
-import { RequestsPage } from './pages/RequestsPage';
-import { SessionPage } from './pages/SessionPage';
-import { SessionsPage } from './pages/SessionsPage';
+
+const AccountPage = lazyPage(() => import('./pages/AccountPage'), 'AccountPage');
+const GroupsPage = lazyPage(() => import('./pages/GroupsPage'), 'GroupsPage');
+const HomePage = lazyPage(() => import('./pages/HomePage'), 'HomePage');
+const NewRequestPage = lazyPage(() => import('./pages/NewRequestPage'), 'NewRequestPage');
+const RequestDetailPage = lazyPage(() => import('./pages/RequestDetailPage'), 'RequestDetailPage');
+const RequestsPage = lazyPage(() => import('./pages/RequestsPage'), 'RequestsPage');
+const SessionPage = lazyPage(() => import('./pages/SessionPage'), 'SessionPage');
+const SessionsPage = lazyPage(() => import('./pages/SessionsPage'), 'SessionsPage');
+const LoginForm = lazyPage(() => import('@tutora/core/auth-forms'), 'LoginForm');
+const RegisterForm = lazyPage(() => import('@tutora/core/auth-forms'), 'RegisterForm');
 
 /** Only same-app paths are allowed as a post-login redirect (no open redirects). */
 export function safeRedirect(target: unknown): string {
@@ -122,7 +124,9 @@ function RootLayout() {
         )
       }
     >
-      <Outlet />
+      <Suspense fallback={<Loading />}>
+        <Outlet />
+      </Suspense>
     </AppShell>
   );
 }

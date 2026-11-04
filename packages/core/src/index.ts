@@ -15,13 +15,8 @@ export {
   useSessionStore,
 } from './react';
 export { API_BASE_URL, APP_URLS } from './config';
-export {
-  applyFieldErrors,
-  describeAuthError,
-  LoginForm,
-  RegisterForm,
-  RequireSession,
-} from './auth-ui';
+export { applyFieldErrors, describeAuthError, RequireSession } from './auth-ui';
+export { lazyPage } from './lazy';
 export { ReportButton, type ReportInput } from './report';
 export * from './format';
 export * from './types';

@@ -11,10 +11,9 @@ import {
 import { unwrap } from '@tutora/api-client';
 import {
   APP_URLS,
-  LoginForm,
   NotificationBell,
-  RegisterForm,
   ReportButton,
+  lazyPage,
   RequireSession,
   useSession,
   useSessionStore,
@@ -27,19 +26,22 @@ import {
   validateExploreSearch,
   validateTutorsSearch,
 } from '@tutora/core/catalog';
-import { AppShell, Button, buttonClass, navLinkClass } from '@tutora/ui';
-import { useState, type ReactNode } from 'react';
+import { AppShell, Button, buttonClass, Loading, navLinkClass } from '@tutora/ui';
+import { Suspense, useState, type ReactNode } from 'react';
 import { api, notificationsApi } from './api';
-import { AccountPage } from './pages/AccountPage';
-import { BidsPage } from './pages/BidsPage';
-import { MarketplacePage } from './pages/MarketplacePage';
-import { MarketRequestPage } from './pages/MarketRequestPage';
-import { SessionPage } from './pages/SessionPage';
-import { SessionsPage } from './pages/SessionsPage';
-import { DashboardPage } from './pages/DashboardPage';
-import { EarningsPage } from './pages/EarningsPage';
-import { GroupsPage } from './pages/GroupsPage';
-import { ProfilePage } from './pages/ProfilePage';
+
+const AccountPage = lazyPage(() => import('./pages/AccountPage'), 'AccountPage');
+const BidsPage = lazyPage(() => import('./pages/BidsPage'), 'BidsPage');
+const MarketplacePage = lazyPage(() => import('./pages/MarketplacePage'), 'MarketplacePage');
+const MarketRequestPage = lazyPage(() => import('./pages/MarketRequestPage'), 'MarketRequestPage');
+const SessionPage = lazyPage(() => import('./pages/SessionPage'), 'SessionPage');
+const SessionsPage = lazyPage(() => import('./pages/SessionsPage'), 'SessionsPage');
+const DashboardPage = lazyPage(() => import('./pages/DashboardPage'), 'DashboardPage');
+const EarningsPage = lazyPage(() => import('./pages/EarningsPage'), 'EarningsPage');
+const GroupsPage = lazyPage(() => import('./pages/GroupsPage'), 'GroupsPage');
+const ProfilePage = lazyPage(() => import('./pages/ProfilePage'), 'ProfilePage');
+const LoginForm = lazyPage(() => import('@tutora/core/auth-forms'), 'LoginForm');
+const RegisterForm = lazyPage(() => import('@tutora/core/auth-forms'), 'RegisterForm');
 
 /** Only same-app paths are allowed as a post-login redirect (no open redirects). */
 export function safeRedirect(target: unknown): string {
@@ -132,7 +134,9 @@ function RootLayout() {
         )
       }
     >
-      <Outlet />
+      <Suspense fallback={<Loading />}>
+        <Outlet />
+      </Suspense>
     </AppShell>
   );
 }

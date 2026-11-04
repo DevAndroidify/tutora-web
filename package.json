@@ -7,7 +7,8 @@
   },
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "e2e"
   ],
   "scripts": {
     "dev": "yarn workspaces foreach -Apiv --include '@tutora/*-app' run dev",
@@ -15,11 +16,13 @@
     "dev:tutor": "yarn workspace @tutora/tutor-app dev",
     "dev:admin": "yarn workspace @tutora/admin-app dev",
     "build": "yarn workspaces foreach -Apt --include '@tutora/*-app' run build",
-    "lint": "eslint \"apps/*/src/**/*.{ts,tsx}\" \"packages/*/src/**/*.{ts,tsx}\" \"packages/*/scripts/**/*.mjs\"",
+    "lint": "eslint \"apps/*/src/**/*.{ts,tsx}\" \"packages/*/src/**/*.{ts,tsx}\" \"packages/*/scripts/**/*.mjs\" \"e2e/**/*.ts\" \"scripts/*.mjs\"",
     "typecheck": "yarn workspaces foreach -Ap run typecheck",
     "test": "vitest run",
     "format": "prettier --write \"apps/*/src/**/*.{ts,tsx,css}\" \"packages/*/src/**/*.{ts,tsx,css}\"",
-    "api:sync": "yarn workspace @tutora/api-client sync"
+    "api:sync": "yarn workspace @tutora/api-client sync",
+    "e2e": "yarn workspace @tutora/e2e test",
+    "budgets": "node scripts/check-budgets.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
