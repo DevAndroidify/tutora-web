@@ -206,6 +206,25 @@ const STATUS_TONES: Record<string, TagTone> = {
   REJECTED: 'danger',
   SUSPENDED: 'danger',
   BANNED: 'danger',
+  INITIATED: 'warning',
+  HELD: 'brand',
+  FROZEN: 'danger',
+  RELEASED: 'success',
+  REFUNDED: 'dark',
+  FAILED: 'danger',
+  RESOLVED_RELEASE: 'success',
+  RESOLVED_REFUND: 'dark',
+  INVITED: 'warning',
+  ACCEPTED: 'success',
+  DECLINED: 'neutral',
+  FORMING: 'warning',
+  BIDDING: 'brand',
+  AWAITING_PAYMENTS: 'warning',
+  CONFIRMED: 'success',
+  SCHEDULED: 'success',
+  PENDING_PAYMENT: 'warning',
+  LIVE: 'danger',
+  ENDED: 'dark',
 };
 
 /** Status word from the API rendered as a tag ("NOT_SUBMITTED" -> "Not submitted"). */
@@ -321,13 +340,47 @@ export function Modal({
 }) {
   const id = useId();
   const panel = useRef<HTMLDivElement>(null);
+  // Keep the latest onClose without re-running the effect: re-running it on every render
+  // would steal focus from whatever field the user is typing in.
+  const closeRef = useRef(onClose);
+  useEffect(() => {
+    closeRef.current = onClose;
+  });
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    const restore = document.activeElement as HTMLElement | null;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeRef.current();
+      // Keep Tab inside the dialog.
+      if (e.key === 'Tab' && panel.current) {
+        const items = [
+          ...panel.current.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          ),
+        ];
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (!first || !last) return;
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
     document.addEventListener('keydown', onKey);
-    panel.current?.querySelector<HTMLElement>('input, select, textarea, button')?.focus();
-    return () => document.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
+    const p = panel.current;
+    (
+      p?.querySelector<HTMLElement>('input, select, textarea') ??
+      p?.querySelector<HTMLElement>('button')
+    )?.focus();
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      restore?.focus?.();
+    };
+  }, [open]);
   if (!open) return null;
   return (
     <div

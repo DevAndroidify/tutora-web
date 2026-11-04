@@ -37,6 +37,8 @@ import { MarketRequestPage } from './pages/MarketRequestPage';
 import { SessionPage } from './pages/SessionPage';
 import { SessionsPage } from './pages/SessionsPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { EarningsPage } from './pages/EarningsPage';
+import { GroupsPage } from './pages/GroupsPage';
 import { ProfilePage } from './pages/ProfilePage';
 
 /** Only same-app paths are allowed as a post-login redirect (no open redirects). */
@@ -65,11 +67,17 @@ function RootLayout() {
               <Link to="/requests" className={navLinkClass}>
                 Requests
               </Link>
+              <Link to="/groups" className={navLinkClass}>
+                Groups
+              </Link>
               <Link to="/bids" className={navLinkClass}>
                 My bids
               </Link>
               <Link to="/sessions" className={navLinkClass}>
                 Sessions
+              </Link>
+              <Link to="/earnings" className={navLinkClass}>
+                Earnings
               </Link>
               <Link to="/profile" className={navLinkClass}>
                 Profile &amp; skills
@@ -297,6 +305,26 @@ const sessionRoute = createRoute({
   },
 });
 
+const groupsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/groups',
+  component: () => (
+    <Protected>
+      <GroupsPage />
+    </Protected>
+  ),
+});
+
+const earningsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/earnings',
+  component: () => (
+    <Protected>
+      <EarningsPage />
+    </Protected>
+  ),
+});
+
 const accountRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/account',
@@ -367,6 +395,8 @@ export const routeTree = rootRoute.addChildren([
   marketRoute,
   marketRequestRoute,
   bidsRoute,
+  groupsRoute,
+  earningsRoute,
   sessionsRoute,
   sessionRoute,
   exploreRoute,

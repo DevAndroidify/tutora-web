@@ -171,7 +171,15 @@ export function RequestDetailPage({ id }: { id: string }) {
           </aside>
         </div>
       )}
-      {!editing && r.status !== 'DRAFT' && <BidsSection request={r} />}
+      {r.status === 'POOLED' && (
+        <Alert tone="info" title="You're in a group for this request">
+          Tutors bid on the group instead, usually at a lower price per seat.{' '}
+          <Link to="/groups" className="link">
+            See group offers
+          </Link>
+        </Alert>
+      )}
+      {!editing && r.status !== 'DRAFT' && r.status !== 'POOLED' && <BidsSection request={r} />}
     </article>
   );
 }

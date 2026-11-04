@@ -30,7 +30,7 @@ export function DashboardPage() {
         title={`Good to see you, ${name}.`}
         description={
           p?.verificationStatus === 'VERIFIED'
-            ? 'You are verified. Learner requests for your approved skills open in the next release.'
+            ? 'You are verified. Bid on learner requests and groups for your approved skills.'
             : 'Finish these steps to get verified. Only verified tutors can bid on learner requests.'
         }
         actions={
@@ -90,6 +90,19 @@ export function DashboardPage() {
             <Stat label="Skills listed" value={p?.skills.length ?? 0} />
             <Stat label="Approved" value={approved} />
           </div>
+          {p?.verificationStatus === 'VERIFIED' && (
+            <div className="flex flex-wrap gap-2">
+              <Link to="/requests" className={buttonClass('secondary')}>
+                Open requests
+              </Link>
+              <Link to="/groups" className={buttonClass('secondary')}>
+                Groups
+              </Link>
+              <Link to="/earnings" className={buttonClass('secondary')}>
+                Earnings
+              </Link>
+            </div>
+          )}
         </aside>
       </div>
     </>

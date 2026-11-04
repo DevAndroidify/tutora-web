@@ -22,6 +22,9 @@ export function ReasonDialog({
   onClose,
   onConfirm,
   children,
+  field = 'reason',
+  label = 'Reason',
+  hint = 'Shown to the person affected and kept in the audit log.',
 }: {
   open: boolean;
   title: string;
@@ -32,6 +35,10 @@ export function ReasonDialog({
   onClose: () => void;
   onConfirm: (reason: string) => void;
   children?: ReactNode;
+  /** Body field the backend validates (for field errors), e.g. "reason" or "note". */
+  field?: string;
+  label?: string;
+  hint?: string;
 }) {
   const [reason, setReason] = useState('');
   const short = reason.trim().length < 5;
@@ -54,12 +61,12 @@ export function ReasonDialog({
         {children}
         {topError(error) && <Alert tone="danger">{topError(error)}</Alert>}
         <Textarea
-          label="Reason"
+          label={label}
           value={reason}
           maxLength={1000}
           onChange={(e) => setReason(e.target.value)}
-          hint="Shown to the person affected and kept in the audit log."
-          error={fieldErr(error, 'reason')}
+          hint={hint}
+          error={fieldErr(error, field)}
         />
         <div className="flex justify-end gap-2">
           <Button variant="ghost" onClick={onClose}>

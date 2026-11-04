@@ -21,6 +21,7 @@ export default defineConfig({
     name: 'tutor',
     environment: 'jsdom',
     setupFiles: ['../../test/setup-dom.ts'],
+    testTimeout: 15_000,
     // Node's fetch needs absolute URLs; in the browser '' means same-origin via the Vite proxy.
     env: { VITE_API_BASE_URL: 'http://localhost:3000' },
   },

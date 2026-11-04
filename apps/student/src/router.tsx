@@ -31,6 +31,7 @@ import { AppShell, Button, buttonClass, navLinkClass } from '@tutora/ui';
 import { useState, type ReactNode } from 'react';
 import { api, notificationsApi } from './api';
 import { AccountPage } from './pages/AccountPage';
+import { GroupsPage } from './pages/GroupsPage';
 import { HomePage } from './pages/HomePage';
 import { NewRequestPage } from './pages/NewRequestPage';
 import { RequestDetailPage } from './pages/RequestDetailPage';
@@ -69,6 +70,9 @@ function RootLayout() {
             <>
               <Link to="/requests" className={navLinkClass}>
                 My requests
+              </Link>
+              <Link to="/groups" className={navLinkClass}>
+                Groups
               </Link>
               <Link to="/sessions" className={navLinkClass}>
                 Sessions
@@ -282,6 +286,16 @@ const sessionRoute = createRoute({
   },
 });
 
+const groupsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/groups',
+  component: () => (
+    <Protected>
+      <GroupsPage />
+    </Protected>
+  ),
+});
+
 const accountRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/account',
@@ -355,6 +369,7 @@ export const routeTree = rootRoute.addChildren([
   requestsRoute,
   newRequestRoute,
   requestRoute,
+  groupsRoute,
   sessionsRoute,
   sessionRoute,
   accountRoute,

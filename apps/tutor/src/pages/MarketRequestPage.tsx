@@ -193,7 +193,7 @@ export function MarketRequestPage({ id }: { id: string }) {
             </Card>
           ) : open ? (
             <BidForm
-              requestId={r.id}
+              target={{ kind: 'request', id: r.id }}
               existing={editing ? bid : null}
               onDone={() => setEditing(false)}
             />
@@ -206,15 +206,22 @@ export function MarketRequestPage({ id }: { id: string }) {
   );
 }
 
-function BidForm({
-  requestId,
+export type BidTarget =
+  { kind: 'request'; id: string } | { kind: 'pool'; id: string; seatCap: number };
+
+/** Sealed bid on a single learner's request, or a group bid (seat price + seat limits) on a pool. */
+export function BidForm({
+  target,
   existing,
   onDone,
 }: {
-  requestId: string;
+  target: BidTarget;
   existing: Bid | null;
   onDone: () => void;
 }) {
+  const pool = target.kind === 'pool' ? target : null;
+  const [minSeats, setMinSeats] = useState('2');
+  const [maxSeats, setMaxSeats] = useState(String(pool ? Math.max(2, pool.seatCap) : 2));
   const qc = useQueryClient();
   const [price, setPrice] = useState(existing ? String(existing.seatPricePaise / 100) : '');
   const [start, setStart] = useState(
@@ -234,16 +241,24 @@ function BidForm({
       durationMinutes: number;
       approachText: string;
     }) =>
-      existing
+      pool
         ? unwrap<Bid>(
-            api.PATCH('/tutor/bids/{id}', { params: { path: { id: existing.id } }, body }),
+            api.POST('/tutor/pools/{id}/bids', {
+              params: { path: { id: pool.id } },
+              body: { ...body, minSeats: Number(minSeats), maxSeats: Number(maxSeats) },
+            }),
           )
-        : unwrap<Bid>(
-            api.POST('/tutor/requests/{id}/bids', { params: { path: { id: requestId } }, body }),
-          ),
+        : existing
+          ? unwrap<Bid>(
+              api.PATCH('/tutor/bids/{id}', { params: { path: { id: existing.id } }, body }),
+            )
+          : unwrap<Bid>(
+              api.POST('/tutor/requests/{id}/bids', { params: { path: { id: target.id } }, body }),
+            ),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: marketKey });
       void qc.invalidateQueries({ queryKey: ['tutor', 'bids'] });
+      void qc.invalidateQueries({ queryKey: ['tutor', 'pools'] });
       onDone();
     },
   });
@@ -267,6 +282,12 @@ function BidForm({
     if (Number.isNaN(at) || lead < MIN_LEAD_MS || lead > MAX_LEAD_MS)
       next.start = 'Pick a time between 15 minutes and 30 days from now.';
     if (!approach.trim()) next.approach = 'Tell the learner how you would teach this.';
+    if (pool) {
+      const lo = Number(minSeats);
+      const hi = Number(maxSeats);
+      if (!Number.isInteger(lo) || lo < 2) next.minSeats = 'At least 2 learners.';
+      if (!Number.isInteger(hi) || hi < lo) next.maxSeats = 'Must be at least the minimum.';
+    }
     setLocal(next);
     if (Object.keys(next).length) return;
     save.mutate({
@@ -289,7 +310,7 @@ function BidForm({
       </p>
       {top && <Alert tone="danger">{top}</Alert>}
       <Field
-        label="Your price for the session, ₹"
+        label={pool ? 'Price per seat, ₹' : 'Your price for the session, ₹'}
         inputMode="decimal"
         value={price}
         onChange={(e) => setPrice(e.target.value)}
@@ -319,6 +340,30 @@ function BidForm({
           ))}
         </Select>
       </div>
+      {pool && (
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field
+            label="Minimum learners"
+            type="number"
+            min={2}
+            max={50}
+            value={minSeats}
+            onChange={(e) => setMinSeats(e.target.value)}
+            hint="The session runs only if this many pay."
+            error={local.minSeats ?? server('minSeats')}
+          />
+          <Field
+            label="Maximum learners"
+            type="number"
+            min={2}
+            max={50}
+            value={maxSeats}
+            onChange={(e) => setMaxSeats(e.target.value)}
+            hint={`This group has up to ${pool.seatCap} seats.`}
+            error={local.maxSeats ?? server('maxSeats')}
+          />
+        </div>
+      )}
       <Textarea
         label="Your approach"
         rows={5}
@@ -330,7 +375,7 @@ function BidForm({
       />
       <div className="flex gap-2">
         <Button type="submit" loading={save.isPending}>
-          {existing ? 'Update bid' : 'Send sealed bid'}
+          {existing ? 'Update bid' : pool ? 'Send group bid' : 'Send sealed bid'}
         </Button>
         {existing && (
           <Button variant="ghost" onClick={onDone}>

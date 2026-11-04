@@ -259,7 +259,13 @@ export function PreJoin({
   );
 }
 
-export function Attendance({ api, sessionId }: { api: SessionApi; sessionId: string }) {
+export function Attendance({
+  api,
+  sessionId,
+}: {
+  api: Pick<SessionApi, 'attendance'>;
+  sessionId: string;
+}) {
   const rows = useQuery({
     queryKey: ['session', sessionId, 'attendance'],
     queryFn: () => api.attendance(sessionId),

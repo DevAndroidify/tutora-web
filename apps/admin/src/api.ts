@@ -1,4 +1,4 @@
-import { createApiClient, unwrap, type AdminPaths } from '@tutora/api-client';
+import { createApiClient, unwrap, type AdminPaths, type PublicPaths } from '@tutora/api-client';
 import {
   API_BASE_URL,
   RealtimeClient,
@@ -26,6 +26,9 @@ session.attach({
   },
   me: () => unwrap<SessionUser>(api.GET('/admin/me')),
 });
+
+/** Public profiles, for showing tutor names next to money rows. */
+export const publicApi = createApiClient<PublicPaths>({ baseUrl: API_BASE_URL });
 
 /** Live updates: new cases, case changes, disputes and payment alerts. */
 export const realtime = new RealtimeClient(session);

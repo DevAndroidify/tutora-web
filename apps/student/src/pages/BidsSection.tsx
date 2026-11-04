@@ -156,16 +156,21 @@ export function BidsSection({ request }: { request: LearningRequest }) {
   );
 }
 
-function BidCard({
+export function BidCard({
   bid: b,
   rank,
   canAccept,
   onAccept,
+  seats,
+  acceptLabel = 'Accept',
 }: {
   bid: RankedBid;
   rank: number | null;
   canAccept: boolean;
   onAccept: () => void;
+  /** Group offers: "2–5 learners". The price is then per seat. */
+  seats?: string;
+  acceptLabel?: string;
 }) {
   const [why, setWhy] = useState(false);
   return (
@@ -240,9 +245,14 @@ function BidCard({
       </div>
       <div className="flex flex-col items-start gap-3 md:items-end">
         <p className="font-display text-4xl font-black">{formatINR(b.seatPricePaise)}</p>
+        {seats && (
+          <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted">
+            per seat · {seats}
+          </p>
+        )}
         {canAccept && (
           <button type="button" className={buttonClass('primary')} onClick={onAccept}>
-            Accept
+            {acceptLabel}
           </button>
         )}
       </div>

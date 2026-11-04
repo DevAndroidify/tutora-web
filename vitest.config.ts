@@ -4,5 +4,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     projects: ['packages/*', 'apps/*'],
+    // jsdom app tests are memory-heavy; a few workers keeps small machines (and CI) from timing out.
+    maxWorkers: 2,
   },
 });

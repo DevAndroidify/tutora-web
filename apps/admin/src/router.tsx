@@ -17,6 +17,8 @@ import { CaseDetailPage } from './pages/CaseDetailPage';
 import { CasesPage } from './pages/CasesPage';
 import { CatalogPage } from './pages/CatalogPage';
 import { DeskPage } from './pages/DeskPage';
+import { DisputesPage } from './pages/DisputesPage';
+import { MoneyPage, type MoneyTab } from './pages/MoneyPage';
 import { SuggestionsPage } from './pages/SuggestionsPage';
 import { VerificationPage } from './pages/VerificationPage';
 
@@ -54,6 +56,12 @@ function RootLayout() {
             </Link>
             <Link to="/cases" className={navLinkClass}>
               Trust &amp; safety
+            </Link>
+            <Link to="/money" className={navLinkClass}>
+              Money
+            </Link>
+            <Link to="/disputes" className={navLinkClass}>
+              Disputes
             </Link>
             <Link to="/account" className={navLinkClass}>
               Account
@@ -131,6 +139,32 @@ const casesRoute = createRoute({
   path: '/cases',
   component: protect(CasesPage),
 });
+const MONEY_TABS: MoneyTab[] = ['payments', 'payouts', 'books', 'connectivity'];
+const moneyRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/money',
+  validateSearch: (s: Record<string, unknown>): { tab?: MoneyTab } => ({
+    tab: MONEY_TABS.includes(s.tab as MoneyTab) ? (s.tab as MoneyTab) : undefined,
+  }),
+  component: function Money() {
+    const { tab } = moneyRoute.useSearch();
+    const navigate = useNavigate();
+    return (
+      <Protected>
+        <MoneyPage
+          tab={tab ?? 'payments'}
+          onTab={(t) => void navigate({ to: '/money', search: { tab: t } })}
+        />
+      </Protected>
+    );
+  },
+});
+const disputesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/disputes',
+  component: protect(DisputesPage),
+});
+
 const accountRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/account',
@@ -178,6 +212,8 @@ export const routeTree = rootRoute.addChildren([
   suggestionsRoute,
   casesRoute,
   caseRoute,
+  moneyRoute,
+  disputesRoute,
   accountRoute,
   loginRoute,
 ]);

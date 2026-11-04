@@ -429,3 +429,130 @@ export interface AppNotification {
 }
 
 export type LiveMode = 'FULL_VIDEO' | 'AUDIO_ONLY' | 'WHITEBOARD_ONLY';
+
+// ---------- money (phase 12) ----------
+
+export type PaymentStatus =
+  'INITIATED' | 'VERIFIED' | 'HELD' | 'RELEASED' | 'REFUNDED' | 'FROZEN' | 'FAILED';
+
+/** GET /tutor/earnings. availablePaise is after the platform fee; the gross figures are before it. */
+export interface Earnings {
+  currency: 'INR';
+  availablePaise: number;
+  pendingGrossPaise: number;
+  releasedGrossPaise: number;
+  platformFeeBps: number;
+  payouts: Payout[];
+}
+
+export interface Payout {
+  id: string;
+  amountPaise: number;
+  reference: string;
+  createdAt: string;
+}
+
+export type DisputeStatus = 'OPEN' | 'RESOLVED_RELEASE' | 'RESOLVED_REFUND';
+
+/** A dispute as staff see it. */
+export interface AdminDispute extends Dispute {
+  participantId: string;
+  paymentId: string;
+  studentUserId: string;
+  tutorUserId: string;
+  status: DisputeStatus;
+}
+
+export interface LedgerBalance {
+  code: string;
+  type: 'ASSET' | 'LIABILITY' | 'REVENUE' | 'EXPENSE' | string;
+  debitsPaise: number;
+  creditsPaise: number;
+  balancePaise: number;
+}
+
+export interface LedgerCheck {
+  totalDebitsPaise: number;
+  totalCreditsPaise: number;
+  balanced: boolean;
+  unbalancedTransactions: number[];
+  transactionCount: number;
+}
+
+export interface Reconciliation {
+  ok: boolean;
+  ledger: LedgerCheck;
+  heldFundsPaise: number;
+  paymentsChecked: number;
+  providerChecked: number;
+  mismatches: Array<{ paymentId?: string; check: string; expected: unknown; actual: unknown }>;
+}
+
+export interface LowBandwidthMetrics {
+  from: string;
+  to: string;
+  sessionsReporting: number;
+  lowBandwidthSessions: number;
+  /** 0..1 */
+  lowBandwidthShare: number;
+  avgDownlinkKbps: number | null;
+  byMode: Array<{ mode: LiveMode; events: number; sessions: number }>;
+}
+
+// ---------- group sessions (phase 13) ----------
+
+export type PoolStatus =
+  'FORMING' | 'BIDDING' | 'AWAITING_PAYMENTS' | 'CONFIRMED' | 'EXPIRED' | 'CANCELLED';
+
+/** GET /student/pools/invites. Other learners stay anonymous: only counts are shown. */
+export interface PoolInvite {
+  id: string;
+  status: 'INVITED' | 'ACCEPTED' | 'DECLINED' | 'EXPIRED';
+  requestId: string;
+  expiresAt: string;
+  matchedBy: string;
+  similarity: number | null;
+  pool: {
+    id: string;
+    status: PoolStatus;
+    skill: { id: string; name: string };
+    level: Level;
+    seatCap: number;
+    joined: number;
+    invited: number;
+  };
+}
+
+export interface PoolBid extends RankedBid {
+  minSeats: number | null;
+  maxSeats: number | null;
+}
+
+export interface PoolOffers {
+  poolId: string;
+  status: PoolStatus;
+  acceptedBidId: string | null;
+  bids: PoolBid[];
+}
+
+/** POST /student/pools/{id}/bids/{bidId}/accept: your own seat in the group session, to pay for. */
+export interface PoolSeat {
+  poolId: string;
+  sessionId: string;
+  participantId: string;
+  amountPaise: number;
+  currency: 'INR';
+  minSeats: number;
+  maxSeats: number;
+  paymentDueAt: string;
+}
+
+/** GET /tutor/pools: groups a verified tutor can bid on. */
+export interface OpenPool {
+  id: string;
+  skillId: string;
+  level: Level;
+  status: PoolStatus;
+  members: number;
+  seatCap: number;
+}
