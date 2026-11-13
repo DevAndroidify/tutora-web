@@ -78,7 +78,7 @@ export function SessionsPage() {
             </Link>
           </EmptyState>
         ) : (
-          <ul>
+          <ul className="flex flex-col gap-3">
             {upcoming.map((s) => (
               <Row key={s.participantId} seat={s} />
             ))}
@@ -88,7 +88,7 @@ export function SessionsPage() {
       {past.length > 0 && (
         <section aria-labelledby="past">
           <SectionHeader id="past" title="Past" />
-          <ul>
+          <ul className="flex flex-col gap-3">
             {past.map((s) => (
               <Row key={s.participantId} seat={s} />
             ))}

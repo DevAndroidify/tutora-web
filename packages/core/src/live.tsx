@@ -65,8 +65,8 @@ function Tile({
   return (
     <figure
       className={cn(
-        'relative aspect-video overflow-hidden bg-night',
-        participant.isSpeaking && 'outline outline-4 outline-brand',
+        'relative aspect-video overflow-hidden rounded-[14px] border-2 border-ink bg-[#16161a]',
+        participant.isSpeaking && 'outline-4 outline-offset-2 outline-brand',
       )}
     >
       <video
@@ -84,7 +84,7 @@ function Tile({
         </div>
       )}
       {!participant.isLocal && <audio ref={audio} autoPlay />}
-      <figcaption className="absolute bottom-0 left-0 flex items-center gap-2 bg-black/70 px-3 py-1.5 text-xs font-bold text-white">
+      <figcaption className="absolute bottom-2 left-2 flex items-center gap-2 rounded-full border-2 border-ink bg-white px-3 py-1 text-xs font-bold text-[#16161a]">
         {label}
         {mic?.isMuted && <span aria-label="muted">· muted</span>}
       </figcaption>
@@ -131,7 +131,7 @@ function Whiteboard({ onSave }: { onSave: (blob: Blob, isFinal: boolean) => Prom
         width={1280}
         height={720}
         aria-label="Whiteboard"
-        className="aspect-video w-full touch-none border-2 border-text bg-white"
+        className="aspect-video w-full touch-none rounded-[14px] border-2 border-ink bg-white"
         onPointerDown={(e) => {
           drawing.current = true;
           e.currentTarget.setPointerCapture(e.pointerId);
@@ -160,7 +160,10 @@ function Whiteboard({ onSave }: { onSave: (blob: Blob, isFinal: boolean) => Prom
             aria-label={c === '#ffffff' ? 'Eraser' : `Pen ${c}`}
             aria-pressed={color === c}
             onClick={() => setColor(c)}
-            className={cn('size-8 border-2', color === c ? 'border-brand' : 'border-border')}
+            className={cn(
+              'size-9 rounded-full border-2 border-ink',
+              color === c && 'outline-3 outline-offset-2 outline-ink',
+            )}
             style={{ background: c }}
           />
         ))}
@@ -333,7 +336,10 @@ export default function LiveRoom({ sessionId, token, api, nameFor, onLeave }: Li
 
   if (!room) {
     return (
-      <section aria-label="Live session" className="bg-night p-6 text-white">
+      <section
+        aria-label="Live session"
+        className="rounded-[var(--radius-card)] border-2 border-ink bg-surface p-6"
+      >
         <Tag tone="warning">connecting</Tag>
       </section>
     );
@@ -347,14 +353,14 @@ export default function LiveRoom({ sessionId, token, api, nameFor, onLeave }: Li
   return (
     <section
       aria-label="Live session"
-      className="flex flex-col gap-4 bg-night p-4 text-white md:p-6"
+      className="lift-lg flex flex-col gap-4 rounded-[var(--radius-card)] border-2 border-ink bg-surface p-4 md:p-6"
     >
       <div className="flex flex-wrap items-center gap-3">
         <Tag tone={state === 'connected' ? 'danger' : 'warning'}>
           {state === 'connected' ? '● Live' : state}
         </Tag>
-        <span className="text-xs text-white/60">{everyone.length} in the room</span>
-        <div role="group" aria-label="Bandwidth mode" className="ml-auto flex gap-1">
+        <span className="text-sm text-muted">{everyone.length} in the room</span>
+        <div role="group" aria-label="Bandwidth mode" className="ml-auto flex flex-wrap gap-2">
           {MODES.map((m) => (
             <button
               key={m.value}
@@ -363,10 +369,10 @@ export default function LiveRoom({ sessionId, token, api, nameFor, onLeave }: Li
               aria-pressed={mode === m.value}
               onClick={() => void applyMode(m.value, 'manual')}
               className={cn(
-                'px-3 py-1.5 text-xs font-bold',
+                'min-h-10 rounded-[10px] border-2 border-ink px-3.5 text-sm font-bold',
                 mode === m.value
-                  ? 'bg-brand text-black'
-                  : 'border border-white/30 text-white/80 hover:border-white',
+                  ? 'lift bg-brand text-[#16161a]'
+                  : 'bg-surface text-text hover:bg-sunken',
               )}
             >
               {m.label}
@@ -374,7 +380,7 @@ export default function LiveRoom({ sessionId, token, api, nameFor, onLeave }: Li
           ))}
         </div>
       </div>
-      {notice && <p className="border-l-4 border-brand pl-3 text-sm text-white/80">{notice}</p>}
+      {notice && <Alert tone="info">{notice}</Alert>}
       {error && <Alert tone="warning">{error}</Alert>}
       {mode === 'WHITEBOARD_ONLY' ? (
         <div className="grid gap-4 lg:grid-cols-[3fr_1fr]">
@@ -405,10 +411,9 @@ export default function LiveRoom({ sessionId, token, api, nameFor, onLeave }: Li
           ))}
         </div>
       )}
-      <div className="flex flex-wrap justify-center gap-2 border-t border-white/10 pt-4">
+      <div className="flex flex-wrap justify-center gap-3 border-t-2 border-dashed border-border pt-4">
         <Button
           variant="secondary"
-          className="border-white text-white hover:bg-white hover:text-black"
           onClick={async () => {
             await room.localParticipant.setMicrophoneEnabled(!mic);
             setMic(!mic);

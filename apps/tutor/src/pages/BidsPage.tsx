@@ -46,9 +46,12 @@ export function BidsPage() {
           </Link>
         </EmptyState>
       ) : (
-        <ul>
+        <ul className="flex flex-col gap-3">
           {bids.data.map((b) => (
-            <li key={b.id} className="border-t border-border first:border-t-2 first:border-text">
+            <li
+              key={b.id}
+              className="rounded-[var(--radius-card)] border-2 border-ink bg-surface px-5"
+            >
               <Link
                 to="/requests/$id"
                 params={{ id: b.requestId }}

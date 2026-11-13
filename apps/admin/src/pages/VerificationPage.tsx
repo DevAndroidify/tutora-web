@@ -103,7 +103,7 @@ function ProfileItem({ profile: p }: { profile: ProfileReview }) {
     },
   });
   return (
-    <li className="border-t-4 border-text bg-surface p-6">
+    <li className="rounded-[var(--radius-card)] border-2 border-ink bg-surface p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <Kicker className="mb-2">Submitted {formatDate(p.verificationSubmittedAt)}</Kicker>
@@ -225,7 +225,7 @@ function SkillItem({ claim: c }: { claim: SkillReview }) {
     },
   });
   return (
-    <li className="flex flex-col border-t-4 border-text bg-surface p-5">
+    <li className="flex flex-col rounded-[var(--radius-card)] border-2 border-ink bg-surface p-5">
       <div className="flex items-start justify-between gap-3">
         <div>
           <Kicker className="mb-1">{c.tutorName}</Kicker>

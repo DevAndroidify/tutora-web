@@ -93,7 +93,7 @@ export function MarketRequestPage({ id }: { id: string }) {
 
   return (
     <article className="flex flex-col gap-10">
-      <header className="border-b-4 border-text pb-6">
+      <header>
         <div className="mb-3 flex flex-wrap items-center gap-3">
           <Kicker>
             {r.skill.name} · {humanize(r.level)}

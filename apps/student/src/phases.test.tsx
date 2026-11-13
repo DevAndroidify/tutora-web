@@ -91,7 +91,7 @@ function renderAt(path: string) {
 describe('student: catalog (phase 2)', () => {
   it('shows the front page publicly and searches skills', async () => {
     const router = renderAt('/');
-    expect(await screen.findByRole('heading', { name: /learn anything/i })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /stuck on something/i })).toBeInTheDocument();
     expect((await screen.findAllByText('Technical Analysis')).length).toBeGreaterThan(0);
 
     await router.navigate({ to: '/explore' });

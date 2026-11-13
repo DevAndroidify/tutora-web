@@ -14,7 +14,7 @@ function PoolRow({ pool }: { pool: OpenPool }) {
   const [open, setOpen] = useState(false);
   const [sent, setSent] = useState(false);
   return (
-    <li className="border-t border-border py-6 first:border-t-2 first:border-text">
+    <li className="rounded-[var(--radius-card)] border-2 border-ink bg-surface p-5">
       <div className="grid gap-3 md:grid-cols-[1fr_auto] md:items-center">
         <div>
           <Kicker className="mb-1">
@@ -89,7 +89,7 @@ export function GroupsPage() {
           your approved skills.
         </EmptyState>
       ) : (
-        <ul>
+        <ul className="flex flex-col gap-3">
           {pools.data.map((p) => (
             <PoolRow key={p.id} pool={p} />
           ))}

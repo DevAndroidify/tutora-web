@@ -16,7 +16,6 @@ import {
   PageHeader,
   Pagination,
   SectionHeader,
-  StoryCard,
   Tag,
 } from '@tutora/ui';
 import { useMemo, useState, type ReactNode } from 'react';
@@ -153,10 +152,8 @@ function Rating({ rating }: { rating: PublicTutor['rating'] }) {
       className="text-sm font-bold"
       aria-label={`Rated ${rating.average.toFixed(1)} out of 5 from ${rating.count} reviews`}
     >
-      <span className="text-brand" aria-hidden>
-        ★
-      </span>{' '}
-      {rating.average.toFixed(1)} <span className="font-normal text-muted">({rating.count})</span>
+      <span aria-hidden>★</span> {rating.average.toFixed(1)}{' '}
+      <span className="font-normal text-muted">({rating.count})</span>
     </span>
   );
 }
@@ -167,21 +164,27 @@ function BadgeTag({ badge }: { badge: PublicTutor['badge'] }) {
   return null;
 }
 
-function SkillCard({ skill, size = 'md' }: { skill: Skill; size?: 'lg' | 'md' | 'sm' }) {
+function SkillCard({ skill }: { skill: Skill; size?: 'lg' | 'md' | 'sm' }) {
   const index = useCategoryIndex();
   const cat = index.get(skill.categoryId);
   return (
-    <Link to="/skills/$slug" params={{ slug: skill.slug }} className="block h-full">
-      <StoryCard
-        seed={skill.slug}
-        size={size}
-        kicker={
-          cat ? (cat.section === cat.name ? cat.name : `${cat.section} · ${cat.name}`) : 'Skill'
-        }
-        title={skill.name}
-        dek={skill.description}
-        meta={skill.learnerNotice ? 'Read before booking' : 'Live 1:1 and group sessions'}
-      />
+    <Link
+      to="/skills/$slug"
+      params={{ slug: skill.slug }}
+      className="story flex h-full flex-col gap-2 rounded-[var(--radius-card)] border-2 border-ink bg-surface p-5 transition-shadow hover:shadow-[4px_4px_0_var(--shadow-color)]"
+    >
+      <span className="self-start rounded-full border-2 border-ink bg-sky px-2.5 py-0.5 text-xs font-bold">
+        {cat ? cat.name : 'Skill'}
+      </span>
+      <h3 className="story-title mt-1 w-fit font-display text-xl font-extrabold leading-tight">
+        {skill.name}
+      </h3>
+      {skill.description && (
+        <p className="line-clamp-2 text-[15px] leading-relaxed text-muted">{skill.description}</p>
+      )}
+      <p className="mt-auto pt-2 text-sm font-medium text-muted">
+        {skill.learnerNotice ? 'Read before booking' : 'Live 1:1 and group sessions'}
+      </p>
     </Link>
   );
 }
@@ -191,14 +194,18 @@ function TutorCard({ tutor }: { tutor: PublicTutor }) {
     <Link
       to="/tutors/$userId"
       params={{ userId: tutor.userId }}
-      className="story flex gap-4 border-t border-border py-4"
+      className="story flex gap-4 rounded-[var(--radius-card)] border-2 border-ink bg-surface p-4"
     >
-      <CoverArt
-        seed={tutor.userId}
-        label={tutor.fullName}
-        ratio="aspect-square"
-        className="w-20 shrink-0"
-      />
+      <span
+        aria-hidden
+        className="grid size-14 shrink-0 place-items-center rounded-full border-2 border-ink bg-pink font-display text-xl font-extrabold text-[#16161a]"
+      >
+        {tutor.fullName
+          .split(' ')
+          .map((w) => w[0])
+          .slice(0, 2)
+          .join('')}
+      </span>
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="story-title text-lg font-extrabold leading-tight">{tutor.fullName}</h3>
@@ -223,88 +230,45 @@ export function FrontPage({ hero }: { hero?: ReactNode }) {
   const categories = useCategories();
   if (skills.isPending) return <Loading />;
   if (skills.isError) return <QueryError error={skills.error} />;
-  const [lead, ...rest] = skills.data.items;
-  const side = rest.slice(0, 3);
-  const grid = rest.slice(3);
+  const all = skills.data.items;
   return (
     <div className="flex flex-col gap-14">
       {hero}
-      {lead && (
-        <section aria-labelledby="lead" className="grid gap-8 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <h2 id="lead" className="sr-only">
-              Featured skill
-            </h2>
-            <SkillCard skill={lead} size="lg" />
-          </div>
-          <div className="flex flex-col">
-            <SectionHeader title="Top skills" />
-            <ol className="flex flex-col">
-              {side.map((s, i) => (
-                <li key={s.id} className="border-b border-border py-4 first:pt-0">
-                  <Link to="/skills/$slug" params={{ slug: s.slug }} className="story flex gap-4">
-                    <span className="font-display text-4xl font-extrabold leading-none text-brand">
-                      {i + 1}
-                    </span>
-                    <div>
-                      <h3 className="story-title text-lg font-extrabold leading-tight">{s.name}</h3>
-                      {s.description && (
-                        <p className="mt-1 line-clamp-2 text-sm text-muted">{s.description}</p>
-                      )}
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ol>
-            <Link to="/explore" className="link mt-4 self-start text-sm">
-              All skills
-            </Link>
+      {all.length > 0 && (
+        <section aria-labelledby="popular">
+          <SectionHeader
+            id="popular"
+            title="What people are learning"
+            action={
+              <Link to="/explore" className="link">
+                All skills
+              </Link>
+            }
+          />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {all.slice(0, 6).map((s) => (
+              <SkillCard key={s.id} skill={s} />
+            ))}
           </div>
         </section>
       )}
 
       {categories.data && categories.data.length > 0 && (
         <section aria-labelledby="sections">
-          <SectionHeader id="sections" title="Sections" />
-          <ul className="grid grid-cols-2 gap-px bg-border sm:grid-cols-3 lg:grid-cols-6">
+          <SectionHeader id="sections" title="Browse by subject" />
+          <ul className="flex flex-wrap gap-3">
             {categories.data.map((c) => (
-              <li key={c.id} className="bg-bg">
+              <li key={c.id}>
                 <Link
                   to="/explore"
                   search={{ category: c.id }}
-                  className="block h-full p-4 hover:bg-brand hover:text-black"
+                  className="inline-flex min-h-11 items-center rounded-full border-2 border-ink bg-surface px-4 font-bold hover:bg-brand hover:text-[#16161a]"
                 >
-                  <span className="font-display text-lg font-extrabold leading-tight">
-                    {c.name}
-                  </span>
-                  {c.description && (
-                    <span className="mt-1 line-clamp-2 block text-xs opacity-70">
-                      {c.description}
-                    </span>
-                  )}
+                  {c.name}
                 </Link>
               </li>
             ))}
           </ul>
-        </section>
-      )}
-
-      {grid.length > 0 && (
-        <section aria-labelledby="more">
-          <SectionHeader
-            id="more"
-            title="More to learn"
-            action={
-              <Link to="/explore" className="link">
-                See all
-              </Link>
-            }
-          />
-          <div className="grid gap-8 sm:grid-cols-3">
-            {grid.map((s) => (
-              <SkillCard key={s.id} skill={s} size="sm" />
-            ))}
-          </div>
         </section>
       )}
 
@@ -319,7 +283,7 @@ export function FrontPage({ hero }: { hero?: ReactNode }) {
               </Link>
             }
           />
-          <div className="grid gap-x-8 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             {tutors.data.items.map((t) => (
               <TutorCard key={t.userId} tutor={t} />
             ))}
@@ -370,7 +334,7 @@ export function ExplorePage({
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search skills, e.g. options, video editing, calculus"
-          className="w-full border-2 border-text bg-surface px-4 py-3 font-display text-lg outline-none focus:shadow-[0_0_0_3px_var(--color-brand)]"
+          className="min-h-13 w-full rounded-[var(--radius-control)] border-2 border-ink bg-surface px-4 py-3 text-lg focus:outline-3 focus:outline-offset-2 focus:outline-ink"
         />
         <Button type="submit">Search</Button>
       </form>
@@ -426,8 +390,10 @@ export function ExplorePage({
 }
 
 const chip = (active: boolean) =>
-  `border-2 px-3 py-1.5 text-xs font-bold ${
-    active ? 'border-text bg-text text-bg' : 'border-border hover:border-text'
+  `inline-flex min-h-10 items-center rounded-full border-2 px-3.5 text-sm font-bold ${
+    active
+      ? 'border-ink bg-ink text-bg'
+      : 'border-ink bg-surface hover:bg-brand hover:text-[#16161a]'
   }`;
 
 export function SkillPage({
@@ -467,7 +433,7 @@ export function SkillPage({
             {s.topics.map((t) => (
               <li
                 key={t.id}
-                className="border border-border bg-surface px-3 py-2 text-sm font-semibold"
+                className="rounded-full border-2 border-ink bg-surface px-3.5 py-1.5 text-sm font-bold"
               >
                 {t.name}
               </li>
@@ -486,7 +452,7 @@ export function SkillPage({
           }
         />
         {tutors.data && tutors.data.items.length > 0 ? (
-          <div className="grid gap-x-8 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             {tutors.data.items.map((t) => (
               <TutorCard key={t.userId} tutor={t} />
             ))}
@@ -534,7 +500,7 @@ export function TutorsPage({
         <EmptyState title="No tutors found" />
       ) : (
         <>
-          <div className="grid gap-x-10 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2">
             {tutors.data.items.map((t) => (
               <TutorCard key={t.userId} tutor={t} />
             ))}
@@ -640,8 +606,8 @@ export function SkillPicker({
   if (value) {
     return (
       <div className="flex flex-col gap-1.5">
-        <span className="text-xs font-bold">{label}</span>
-        <div className="flex items-center justify-between gap-3 border-2 border-text bg-surface px-3 py-2">
+        <span className="text-[15px] font-bold">{label}</span>
+        <div className="flex min-h-12 items-center justify-between gap-3 rounded-[var(--radius-control)] border-2 border-ink bg-sky px-3.5 py-2">
           <span className="font-display text-lg font-extrabold">{value.name}</span>
           <Button variant="ghost" onClick={() => onChange(null)}>
             Change
@@ -652,7 +618,7 @@ export function SkillPicker({
   }
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor="skill-picker" className="text-xs font-bold">
+      <label htmlFor="skill-picker" className="text-[15px] font-bold">
         {label}
       </label>
       <input
@@ -663,23 +629,23 @@ export function SkillPicker({
         placeholder="Type to search skills"
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? 'skill-picker-error' : undefined}
-        className={`border bg-surface px-3 py-2.5 text-sm outline-none focus:border-text focus:shadow-[0_0_0_3px_var(--color-brand)] ${error ? 'border-danger' : 'border-border'}`}
+        className={`min-h-12 rounded-[var(--radius-control)] border-2 bg-surface px-3.5 py-2.5 text-base focus:outline-3 focus:outline-offset-2 focus:outline-ink ${error ? 'border-danger' : 'border-ink'}`}
       />
       {error && (
-        <p id="skill-picker-error" role="alert" className="text-xs font-medium text-danger">
+        <p id="skill-picker-error" role="alert" className="text-[13px] font-bold text-danger">
           {error}
         </p>
       )}
       <ul
         aria-label="Matching skills"
-        className="max-h-64 overflow-y-auto border border-border bg-surface"
+        className="max-h-64 overflow-y-auto rounded-[var(--radius-control)] border-2 border-ink bg-surface"
       >
         {results.data?.items.map((s) => (
           <li key={s.id} className="border-b border-border last:border-0">
             <button
               type="button"
               onClick={() => onChange(s)}
-              className="block w-full px-3 py-2 text-left hover:bg-brand hover:text-black"
+              className="block w-full px-3.5 py-2.5 text-left hover:bg-brand hover:text-[#16161a] focus-visible:bg-brand focus-visible:text-[#16161a]"
             >
               <span className="font-semibold">{s.name}</span>
               {s.description && (

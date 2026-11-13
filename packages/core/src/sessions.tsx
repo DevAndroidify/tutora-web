@@ -87,7 +87,7 @@ export function DateBlock({ iso }: { iso: string }) {
   const d = new Date(iso);
   return (
     <span
-      className="flex w-16 shrink-0 flex-col items-center border-2 border-text py-1.5"
+      className="flex w-16 shrink-0 flex-col items-center rounded-[12px] border-2 border-ink bg-brand py-1.5 text-[#16161a]"
       aria-hidden
     >
       <span className="font-display text-3xl font-extrabold leading-none">
@@ -114,7 +114,7 @@ export function SessionRow({
 }) {
   const phase = sessionPhase(seat);
   return (
-    <li className="border-t border-border first:border-t-2 first:border-text">
+    <li className="rounded-[var(--radius-card)] border-2 border-ink bg-surface px-4">
       {link(
         <div className="story flex items-center gap-5 py-5">
           <DateBlock iso={seat.startsAt} />
@@ -189,8 +189,8 @@ export function PreJoin({
 
   return (
     <div className="grid gap-8 lg:grid-cols-[3fr_2fr]">
-      <section className="flex flex-col items-start justify-center gap-4 bg-night p-8 text-white">
-        <p className="text-xs font-bold text-brand">
+      <section className="lift-lg flex flex-col items-start justify-center gap-4 rounded-[var(--radius-card)] border-2 border-ink bg-surface p-8">
+        <p className="mark text-sm font-bold">
           {seat.sessionStatus === 'LIVE' ? 'Live now' : open ? 'Room is open' : 'Room opens in'}
         </p>
         <p className="font-display text-6xl font-extrabold leading-none md:text-7xl">
@@ -198,7 +198,7 @@ export function PreJoin({
             ? 'Join the session'
             : formatCountdown(opensAt - now)}
         </p>
-        <p className="text-sm text-white/70">
+        <p className="text-[15px] text-muted">
           Starts {formatDateTime(seat.startsAt)} · {seat.durationMinutes} minutes. Use headphones;
           on a weak connection switch to audio only.
         </p>
@@ -210,7 +210,7 @@ export function PreJoin({
         >
           Join now
         </Button>
-        {joinError && <p className="text-sm font-semibold text-brand">{joinError}</p>}
+        {joinError && <p className="text-sm font-bold text-danger">{joinError}</p>}
       </section>
       <Card>
         <h3 className="text-xl font-extrabold">Recording</h3>
@@ -413,7 +413,7 @@ export function ReplayView({ api, sessionId }: { api: SessionApi; sessionId: str
                   onClick={() =>
                     setFlipped((f) => new Set(f.has(i) ? [...f].filter((x) => x !== i) : [...f, i]))
                   }
-                  className="flex min-h-36 w-full flex-col justify-center border-2 border-text bg-surface p-5 text-left hover:bg-bg"
+                  className="flex min-h-36 w-full flex-col justify-center rounded-[var(--radius-card)] border-2 border-ink bg-surface p-5 text-left hover:bg-sunken"
                 >
                   <span className="text-xs font-extrabold text-muted">
                     {flipped.has(i) ? 'Answer' : 'Question'}

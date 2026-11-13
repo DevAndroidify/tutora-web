@@ -72,7 +72,7 @@ export function SessionPage({ id }: { id: string }) {
 
   return (
     <article className="flex flex-col gap-10">
-      <header className="border-b-4 border-text pb-6">
+      <header>
         <Link to="/sessions" className="link text-xs">
           ← Sessions
         </Link>

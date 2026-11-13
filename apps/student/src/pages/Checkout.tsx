@@ -146,16 +146,16 @@ export function Checkout({ seat }: { seat: SessionSeat }) {
   return (
     <section
       aria-labelledby="pay"
-      className="grid gap-0 border-4 border-text lg:grid-cols-[3fr_2fr]"
+      className="lift-lg grid gap-0 overflow-hidden rounded-[var(--radius-card)] border-2 border-ink lg:grid-cols-[3fr_2fr]"
     >
-      <div className="bg-night p-8 text-white">
-        <p id="pay" className="text-xs font-bold text-brand">
+      <div className="border-b-2 border-ink bg-brand p-8 text-[#16161a] lg:border-r-2 lg:border-b-0">
+        <p id="pay" className="text-sm font-bold">
           {expired ? 'Seat released' : 'Seat held for you'}
         </p>
         <p className="mt-2 font-display text-7xl font-extrabold leading-none">
           {expired ? '0:00' : left !== null ? formatCountdown(left) : '—'}
         </p>
-        <p className="mt-4 max-w-md text-sm text-white/70">
+        <p className="mt-4 max-w-md text-[15px]">
           {expired
             ? 'The payment window closed, so the request reopened for bids. You can accept another bid.'
             : 'Pay before the timer runs out. Tutora holds the money and releases it to the tutor after the session; disputes are reviewed by our team.'}

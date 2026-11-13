@@ -126,9 +126,12 @@ export function MarketplacePage() {
             </EmptyState>
           ) : (
             <>
-              <ul className="grid gap-x-10 gap-y-2 md:grid-cols-2">
+              <ul className="grid gap-4 md:grid-cols-2">
                 {list.data.items.map((r) => (
-                  <li key={r.id} className="border-t-4 border-text">
+                  <li
+                    key={r.id}
+                    className="rounded-[var(--radius-card)] border-2 border-ink bg-surface px-5"
+                  >
                     <Link
                       to="/requests/$id"
                       params={{ id: r.id }}

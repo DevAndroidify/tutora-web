@@ -224,7 +224,7 @@ function GroupOffers({ invite }: { invite: PoolInvite }) {
           Verified tutors can see this group now. Offers appear here.
         </EmptyState>
       ) : (
-        <ol className="flex flex-col gap-6">
+        <ol className="grid items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3">
           {shown.map((b, n) => (
             <BidCard
               key={b.id}

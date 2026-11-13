@@ -43,10 +43,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           <div
             key={t.id}
             role="status"
-            className="pointer-events-auto border-l-8 border-brand bg-night p-4 text-white shadow-2xl"
+            className="lift pointer-events-auto rounded-[14px] border-2 border-ink bg-surface p-4"
           >
             <p className="font-display text-lg font-extrabold leading-tight">{t.title}</p>
-            {t.body && <p className="mt-1 text-sm text-white/70">{t.body}</p>}
+            {t.body && <p className="mt-1 text-sm text-muted">{t.body}</p>}
             {t.action && (
               <button
                 type="button"
@@ -54,7 +54,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                   t.action?.onClick();
                   setToasts((all) => all.filter((x) => x.id !== t.id));
                 }}
-                className="mt-2 text-xs font-bold text-brand hover:underline"
+                className="mark mt-2 text-sm font-bold hover:underline"
               >
                 {t.action.label}
               </button>
@@ -152,7 +152,7 @@ export function NotificationBell({
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-label={unread.length ? `Notifications, ${unread.length} unread` : 'Notifications'}
-        className="relative flex size-10 items-center justify-center border-2 border-text hover:bg-text hover:text-bg"
+        className="relative flex size-11 items-center justify-center rounded-full border-2 border-ink bg-surface hover:bg-brand hover:text-[#16161a]"
       >
         <svg
           viewBox="0 0 24 24"
@@ -166,7 +166,7 @@ export function NotificationBell({
           <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
         </svg>
         {unread.length > 0 && (
-          <span className="absolute -right-2 -top-2 flex min-w-5 items-center justify-center bg-danger px-1 text-xs font-extrabold text-white">
+          <span className="absolute -right-2 -top-2 flex min-w-5 items-center justify-center rounded-full border-2 border-ink bg-danger px-1 text-xs font-extrabold text-white">
             {unread.length > 9 ? '9+' : unread.length}
           </span>
         )}
@@ -180,9 +180,9 @@ export function NotificationBell({
         />
       </button>
       {open && (
-        <div className="absolute right-0 top-12 z-40 w-96 max-w-[calc(100vw-2rem)] border-t-8 border-brand bg-surface shadow-2xl">
+        <div className="lift-lg absolute right-0 top-13 z-40 w-96 max-w-[calc(100vw-2rem)] overflow-hidden rounded-[var(--radius-card)] border-2 border-ink bg-surface">
           <div className="flex items-center justify-between border-b border-border px-4 py-3">
-            <p className="text-xs font-extrabold">Notifications</p>
+            <p className="font-display text-lg font-extrabold">Notifications</p>
             {unread.length > 0 && (
               <button
                 type="button"
@@ -202,7 +202,7 @@ export function NotificationBell({
                   <button
                     type="button"
                     onClick={() => open_(n)}
-                    className="flex w-full gap-3 px-4 py-3 text-left hover:bg-bg"
+                    className="flex w-full gap-3 px-4 py-3 text-left hover:bg-sunken"
                   >
                     <span
                       aria-hidden

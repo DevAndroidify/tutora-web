@@ -75,7 +75,7 @@ export function SessionPage({ id }: { id: string }) {
 
   return (
     <article className="flex flex-col gap-10">
-      <header className="border-b-4 border-text pb-6">
+      <header>
         <Link to="/sessions" className="link text-xs">
           ← Sessions
         </Link>
@@ -198,7 +198,7 @@ function QuizPanel({ sessionId }: { sessionId: string }) {
               {q.options.map((o, j) => (
                 <label
                   key={j}
-                  className="flex cursor-pointer items-center gap-3 border border-border bg-surface px-3 py-2 text-sm has-[:checked]:border-text has-[:checked]:bg-brand/20"
+                  className="flex min-h-11 cursor-pointer items-center gap-3 rounded-[12px] border-2 border-ink bg-surface px-3.5 py-2 text-[15px] has-[:checked]:bg-brand has-[:checked]:text-[#16161a]"
                 >
                   <input
                     type="radio"
@@ -264,7 +264,7 @@ function ReviewPanel({ sessionId, tutorName }: { sessionId: string; tutorName: s
                 aria-checked={rating === n}
                 aria-label={`${n} star${n > 1 ? 's' : ''}`}
                 onClick={() => setRating(n)}
-                className={`size-11 border-2 font-display text-2xl font-extrabold ${n <= rating ? 'border-text bg-brand text-black' : 'border-border text-muted'}`}
+                className={`size-12 rounded-[12px] border-2 border-ink font-display text-2xl font-extrabold ${n <= rating ? 'bg-brand text-[#16161a]' : 'bg-surface text-muted'}`}
               >
                 ★
               </button>
