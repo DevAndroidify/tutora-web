@@ -33,7 +33,7 @@ export function AccountPage() {
               ]}
             />
           </Card>
-          <Card className="border-t-8 border-t-brand">
+          <Card className="lift-lg">
             <h2 className="text-xl font-extrabold">Also learning?</h2>
             <p className="mt-2 text-sm text-muted">
               Use this same account in the student app to post requests and book tutors.

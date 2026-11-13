@@ -114,10 +114,8 @@ export function MarketRequestPage({ id }: { id: string }) {
             </Alert>
           )}
           <section aria-labelledby="brief">
-            <SectionHeader id="brief" title="The brief" />
-            <p className="whitespace-pre-line font-display text-lg leading-relaxed">
-              {r.description}
-            </p>
+            <SectionHeader id="brief" title="Their question" />
+            <p className="whitespace-pre-line text-[17px] leading-relaxed">{r.description}</p>
           </section>
           {r.attachments.length > 0 && (
             <section aria-labelledby="files">
@@ -151,7 +149,7 @@ export function MarketRequestPage({ id }: { id: string }) {
         <aside>
           <SectionHeader id="bid" title={bid ? 'Your sealed bid' : 'Place a sealed bid'} />
           {bid && !editing ? (
-            <Card className="border-t-8 border-t-brand">
+            <Card className="lift-lg">
               <div className="flex items-start justify-between gap-3">
                 <p className="font-display text-5xl font-extrabold">
                   {formatINR(bid.seatPricePaise)}
@@ -304,12 +302,22 @@ export function BidForm({
     <form
       onSubmit={onSubmit}
       noValidate
-      className="flex flex-col gap-5 border-t-8 border-brand bg-surface p-6"
+      className="lift-lg flex flex-col gap-5 rounded-[var(--radius-card)] border-2 border-ink bg-surface p-6"
     >
-      <p className="text-sm text-muted">
-        Learners rank bids on teaching outcomes, ratings, price and timing. Your price stays sealed
-        from other tutors.
-      </p>
+      <div className="rounded-[14px] border-2 border-ink bg-sunken p-4 text-sm">
+        <p className="font-bold">How learners see offers ranked</p>
+        <dl className="mt-2 grid grid-cols-[1fr_auto] gap-x-4 gap-y-1">
+          <dt>Learner results</dt>
+          <dd className="font-bold">40%</dd>
+          <dt>How soon you can start</dt>
+          <dd className="font-bold">25%</dd>
+          <dt>Showing up on time</dt>
+          <dd className="font-bold">20%</dd>
+          <dt>Price</dt>
+          <dd className="font-bold">15%</dd>
+        </dl>
+        <p className="mt-2 text-muted">Your price stays sealed from other tutors.</p>
+      </div>
       {top && <Alert tone="danger">{top}</Alert>}
       <Field
         label={pool ? 'Price per seat, ₹' : 'Your price for the session, ₹'}

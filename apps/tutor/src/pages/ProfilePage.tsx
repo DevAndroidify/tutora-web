@@ -308,7 +308,7 @@ function SkillsSection({
         )}
       </ul>
       {(adding || editing) && profile && (
-        <Card className="mt-8 max-w-3xl border-t-8 border-t-brand">
+        <Card className="lift-lg mt-8 max-w-3xl">
           <h3 className="mb-5 text-2xl font-extrabold">
             {editing ? `Edit ${editing.name}` : 'Add a skill'}
           </h3>
