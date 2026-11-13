@@ -1,14 +1,9 @@
 import { useEffect, useId, useRef, type ReactNode } from 'react';
 import { Button, cn } from './components';
 
-/** Small uppercase label above a headline ("FINANCE & INVESTING"). */
+/** Small label above a headline ("Finance & Investing"). */
 export function Kicker({ children, className }: { children: ReactNode; className?: string }) {
-  return (
-    <p className={cn('text-[11px] font-bold uppercase tracking-[0.2em] text-muted', className)}>
-      <span aria-hidden className="mr-2 inline-block h-2 w-2 bg-brand align-middle" />
-      {children}
-    </p>
-  );
+  return <p className={cn('text-sm font-bold text-muted', className)}>{children}</p>;
 }
 
 /** Section heading with a heavy rule above it, like a newspaper section. */
@@ -22,24 +17,16 @@ export function SectionHeader({
   id?: string;
 }) {
   return (
-    <div className="mb-5 flex items-end justify-between gap-4 border-t-4 border-text pt-3">
-      <h2 id={id} className="font-sans text-sm font-black uppercase tracking-[0.2em]">
+    <div className="mb-5 flex items-end justify-between gap-4">
+      <h2 id={id} className="text-2xl font-extrabold">
         {title}
       </h2>
-      {action && <div className="text-xs font-bold uppercase tracking-[0.12em]">{action}</div>}
+      {action && <div className="text-sm font-bold">{action}</div>}
     </div>
   );
 }
 
-const PALETTES = [
-  ['#1f3d2b', '#3f7a52'],
-  ['#0b3954', '#1f7a8c'],
-  ['#7a2e1d', '#c8553d'],
-  ['#1b1b3a', '#4a4e8c'],
-  ['#6b4b16', '#d99a2b'],
-  ['#2f3e46', '#52796f'],
-  ['#3d1f3d', '#8c3f72'],
-] as const;
+const PALETTES = ['#fff27a', '#b8f2d0', '#ffc6e0', '#bfe0ff', '#ffd9a8', '#e3d7ff'] as const;
 
 function hash(s: string): number {
   let h = 2166136261;
@@ -48,8 +35,8 @@ function hash(s: string): number {
 }
 
 /**
- * Generated cover image: deep natural tones with contour-map lines, so every
- * skill and tutor gets a distinct, photo-free "cover" that reads as editorial art.
+ * Generated cover: a flat pastel block with the subject's initial and a few
+ * ruled lines, so every skill and tutor gets a distinct, photo-free cover.
  */
 export function CoverArt({
   seed,
@@ -63,42 +50,29 @@ export function CoverArt({
   ratio?: string;
 }) {
   const h = hash(seed);
-  const [from, to] = PALETTES[h % PALETTES.length]!;
-  const cx = 20 + (h % 60);
-  const cy = 25 + ((h >> 8) % 50);
-  const rings = Array.from({ length: 9 }, (_, i) => 8 + i * 9 + ((h >> (i + 3)) % 4));
-  const gid = `g${h.toString(36)}`;
+  const fill = PALETTES[h % PALETTES.length]!;
+  const lines = 3 + (h % 3);
   return (
-    <div className={cn('relative overflow-hidden', ratio, className)} aria-hidden>
-      <svg
-        viewBox="0 0 100 66"
-        preserveAspectRatio="xMidYMid slice"
-        className="absolute inset-0 size-full"
-      >
-        <defs>
-          <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor={from} />
-            <stop offset="1" stopColor={to} />
-          </linearGradient>
-        </defs>
-        <rect width="100" height="66" fill={`url(#${gid})`} />
-        {rings.map((r, i) => (
-          <ellipse
+    <div
+      className={cn(
+        'relative overflow-hidden rounded-[14px] border-2 border-[#16161a]',
+        ratio,
+        className,
+      )}
+      style={{ background: fill }}
+      aria-hidden
+    >
+      <div className="absolute inset-x-4 top-4 flex flex-col gap-2">
+        {Array.from({ length: lines }, (_, i) => (
+          <span
             key={i}
-            cx={cx}
-            cy={cy}
-            rx={r * 1.25}
-            ry={r * 0.8}
-            fill="none"
-            stroke="white"
-            strokeOpacity={0.09 + (i % 3) * 0.03}
-            strokeWidth={0.4}
-            transform={`rotate(${(h % 40) - 20} ${cx} ${cy})`}
+            className="h-1.5 rounded-full bg-[#16161a]/15"
+            style={{ width: `${40 + ((h >> (i * 3)) % 45)}%` }}
           />
         ))}
-      </svg>
+      </div>
       {label && (
-        <span className="absolute bottom-2 right-3 font-display text-6xl font-black leading-none text-white/25">
+        <span className="absolute bottom-1 right-3 font-display text-6xl font-extrabold leading-none text-[#16161a]">
           {label.slice(0, 1).toUpperCase()}
         </span>
       )}
@@ -106,7 +80,7 @@ export function CoverArt({
   );
 }
 
-/** Front-page story card: cover, kicker, serif headline, standfirst and meta line. */
+/** Card for a skill or tutor: cover, kicker, headline, short description and meta line. */
 export function StoryCard({
   seed,
   kicker,
@@ -137,7 +111,7 @@ export function StoryCard({
         {kicker && <Kicker className="mb-2">{kicker}</Kicker>}
         <h3
           className={cn(
-            'story-title font-black leading-tight',
+            'story-title w-fit font-extrabold leading-tight',
             size === 'lg' ? 'text-3xl md:text-4xl' : size === 'md' ? 'text-xl' : 'text-lg',
           )}
         >
@@ -153,11 +127,7 @@ export function StoryCard({
             {dek}
           </p>
         )}
-        {meta && (
-          <div className="mt-auto pt-3 text-xs font-semibold uppercase tracking-[0.1em] text-muted">
-            {meta}
-          </div>
-        )}
+        {meta && <div className="mt-auto pt-3 text-sm font-medium text-muted">{meta}</div>}
       </div>
     </article>
   );
@@ -165,19 +135,19 @@ export function StoryCard({
 
 type TagTone = 'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'dark';
 const tagTones: Record<TagTone, string> = {
-  neutral: 'border border-border text-muted',
-  brand: 'bg-brand text-black',
-  success: 'bg-success text-white',
-  warning: 'bg-warning text-white',
-  danger: 'bg-danger text-white',
-  dark: 'bg-night text-white',
+  neutral: 'bg-surface text-text',
+  brand: 'bg-brand text-[#16161a]',
+  success: 'bg-mint text-text',
+  warning: 'bg-[#ffd9a8] text-[#16161a]',
+  danger: 'bg-pink text-text',
+  dark: 'bg-ink text-bg',
 };
 
 export function Tag({ tone = 'neutral', children }: { tone?: TagTone; children: ReactNode }) {
   return (
     <span
       className={cn(
-        'inline-flex items-center px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.14em]',
+        'inline-flex items-center rounded-full border-2 border-ink px-2.5 py-0.5 text-xs font-bold',
         tagTones[tone],
       )}
     >
@@ -245,11 +215,7 @@ export function Tabs<T extends string>({
   label: string;
 }) {
   return (
-    <div
-      role="tablist"
-      aria-label={label}
-      className="mb-6 flex gap-1 overflow-x-auto border-b border-border"
-    >
+    <div role="tablist" aria-label={label} className="mb-6 flex gap-2 overflow-x-auto pb-1">
       {items.map((it) => (
         <button
           key={it.value}
@@ -258,10 +224,10 @@ export function Tabs<T extends string>({
           aria-selected={it.value === value}
           onClick={() => onChange(it.value)}
           className={cn(
-            '-mb-px whitespace-nowrap border-b-4 px-3 py-2.5 text-xs font-bold uppercase tracking-[0.12em]',
+            'min-h-10 whitespace-nowrap rounded-[10px] border-2 border-ink px-3.5 text-sm font-bold',
             it.value === value
-              ? 'border-brand text-text'
-              : 'border-transparent text-muted hover:text-text',
+              ? 'bg-brand text-[#16161a] lift'
+              : 'bg-surface text-text hover:bg-sunken',
           )}
         >
           {it.label}
@@ -297,7 +263,7 @@ export function Pagination({
       >
         ← Previous
       </Button>
-      <span className="text-xs font-bold uppercase tracking-[0.12em] text-muted">
+      <span className="text-sm font-bold text-muted">
         Page {page} of {pages}
       </span>
       <Button variant="ghost" disabled={page >= pages} onClick={() => onChange(offset + limit)}>
@@ -318,10 +284,10 @@ export function Stat({
   hint?: ReactNode;
 }) {
   return (
-    <div className="border-t-4 border-text pt-3">
-      <p className="font-display text-5xl font-black leading-none">{value}</p>
-      <p className="mt-2 text-xs font-bold uppercase tracking-[0.14em]">{label}</p>
-      {hint && <p className="mt-1 text-xs text-muted">{hint}</p>}
+    <div className="rounded-2xl border-2 border-ink bg-surface px-4 py-4">
+      <p className="text-sm text-muted">{label}</p>
+      <p className="mt-1 font-display text-4xl font-extrabold leading-none">{value}</p>
+      {hint && <p className="mt-2 text-[13px] text-muted">{hint}</p>}
     </div>
   );
 }
@@ -384,7 +350,7 @@ export function Modal({
   if (!open) return null;
   return (
     <div
-      className="fixed inset-0 z-40 flex items-start justify-center overflow-y-auto bg-black/60 p-4 pt-[10vh]"
+      className="fixed inset-0 z-40 flex items-start justify-center overflow-y-auto bg-[#16161a]/50 p-4 pt-[10vh]"
       onClick={onClose}
     >
       <div
@@ -392,18 +358,18 @@ export function Modal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={id}
-        className="w-full max-w-lg border-t-8 border-brand bg-surface p-6 shadow-2xl"
+        className="lift-lg w-full max-w-lg rounded-[var(--radius-card)] border-2 border-ink bg-surface p-6"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-start justify-between gap-4">
-          <h2 id={id} className="text-2xl font-black">
+          <h2 id={id} className="text-2xl font-extrabold">
             {title}
           </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="text-2xl leading-none text-muted hover:text-text"
+            className="grid size-10 place-items-center rounded-[10px] text-2xl leading-none text-muted hover:bg-sunken hover:text-text"
           >
             ×
           </button>
@@ -417,10 +383,10 @@ export function Modal({
 /** Definition list in two columns, for detail pages. */
 export function Facts({ items }: { items: Array<[string, ReactNode]> }) {
   return (
-    <dl className="grid grid-cols-[max-content_1fr] gap-x-8 gap-y-3 text-sm">
+    <dl className="grid grid-cols-[max-content_1fr] gap-x-8 gap-y-3 text-[15px]">
       {items.map(([k, v]) => (
         <div key={k} className="contents">
-          <dt className="text-xs font-bold uppercase tracking-[0.12em] text-muted">{k}</dt>
+          <dt className="text-muted">{k}</dt>
           <dd>{v}</dd>
         </div>
       ))}

@@ -170,7 +170,7 @@ export function RequestForm({
           error={fieldError('budget', 'budgetHintPaise')}
         />
       </div>
-      <div className="flex flex-wrap gap-3 border-t border-border pt-6">
+      <div className="flex flex-wrap gap-3 border-t-2 border-dashed border-border pt-6">
         {mode === 'create' ? (
           <>
             <Button type="submit" loading={submitting}>

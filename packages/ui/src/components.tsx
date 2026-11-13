@@ -14,18 +14,20 @@ export const cn = clsx;
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-brand text-accent-fg hover:brightness-95',
-  secondary: 'border-2 border-text text-text hover:bg-text hover:text-bg',
-  ghost: 'text-text hover:bg-text/5',
-  danger: 'bg-danger text-white hover:brightness-110',
+  primary:
+    'border-ink bg-brand text-accent-fg lift hover:-translate-x-px hover:-translate-y-px active:translate-x-0.5 active:translate-y-0.5 active:shadow-none',
+  secondary: 'border-ink bg-surface text-text hover:bg-sunken',
+  ghost: 'border-transparent text-text hover:bg-text/5',
+  danger:
+    'border-ink bg-danger text-white lift hover:-translate-x-px hover:-translate-y-px active:translate-x-0.5 active:translate-y-0.5 active:shadow-none',
 };
 
 /** Classes for a button-looking element (also used on router links). */
 export function buttonClass(variant: Variant = 'primary', className?: string): string {
   return cn(
-    'inline-flex items-center justify-center gap-2 rounded-[var(--radius-control)] px-4 py-2.5',
-    'text-xs font-bold uppercase tracking-[0.12em] transition',
-    'disabled:cursor-not-allowed disabled:opacity-50',
+    'inline-flex min-h-11 items-center justify-center gap-2 rounded-[var(--radius-control)] border-2 px-4 py-2',
+    'text-[15px] font-bold transition-[transform,box-shadow,background-color]',
+    'disabled:cursor-not-allowed disabled:opacity-50 disabled:translate-x-0 disabled:translate-y-0',
     variants[variant],
     className,
   );
@@ -57,9 +59,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 
 const controlClass = (error?: string) =>
   cn(
-    'w-full rounded-[var(--radius-control)] border bg-surface px-3 py-2.5 text-sm text-text outline-none',
-    'focus:border-text focus:shadow-[0_0_0_3px_var(--color-brand)]',
-    error ? 'border-danger' : 'border-border',
+    'min-h-12 w-full rounded-[var(--radius-control)] border-2 bg-surface px-3.5 py-2.5 text-base text-text',
+    'focus:outline-3 focus:outline-offset-2 focus:outline-ink',
+    error ? 'border-danger' : 'border-ink',
   );
 
 function FieldFrame({
@@ -78,18 +80,18 @@ function FieldFrame({
   children: ReactNode;
 }) {
   return (
-    <div className={cn('flex flex-col gap-1.5', className)}>
-      <label htmlFor={id} className="text-xs font-bold uppercase tracking-[0.1em]">
+    <div className={cn('flex flex-col gap-2', className)}>
+      <label htmlFor={id} className="text-[15px] font-bold">
         {label}
       </label>
       {children}
       {hint && !error && (
-        <p id={`${id}-hint`} className="text-xs text-muted">
+        <p id={`${id}-hint`} className="text-[13px] text-muted">
           {hint}
         </p>
       )}
       {error && (
-        <p id={`${id}-error`} role="alert" className="text-xs font-medium text-danger">
+        <p id={`${id}-error`} role="alert" className="text-[13px] font-bold text-danger">
           {error}
         </p>
       )}
@@ -183,15 +185,21 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
 });
 
 export function Card({ className, children }: { className?: string; children: ReactNode }) {
-  return <div className={cn('border border-border bg-surface p-6', className)}>{children}</div>;
+  return (
+    <div
+      className={cn('rounded-[var(--radius-card)] border-2 border-ink bg-surface p-6', className)}
+    >
+      {children}
+    </div>
+  );
 }
 
 type Tone = 'info' | 'success' | 'warning' | 'danger';
 const tones: Record<Tone, string> = {
-  info: 'border-l-brand',
-  success: 'border-l-success',
-  warning: 'border-l-warning',
-  danger: 'border-l-danger',
+  info: 'bg-sky',
+  success: 'bg-mint',
+  warning: 'bg-brand text-[#16161a]',
+  danger: 'bg-pink',
 };
 
 export function Alert({
@@ -207,12 +215,12 @@ export function Alert({
     <div
       role={tone === 'danger' ? 'alert' : 'status'}
       className={cn(
-        'border border-l-[6px] border-border bg-surface px-4 py-3 text-sm',
+        'rounded-[14px] border-2 border-ink px-4 py-3 text-[15px] leading-relaxed',
         tones[tone],
       )}
     >
       {title && <p className="font-bold">{title}</p>}
-      {children && <div className={cn(title && 'mt-1', 'text-muted')}>{children}</div>}
+      {children && <div className={cn(title && 'mt-1')}>{children}</div>}
     </div>
   );
 }
@@ -253,43 +261,30 @@ export function PageHeader({
   actions?: ReactNode;
 }) {
   return (
-    <header className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b-4 border-text pb-5">
+    <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
       <div className="max-w-3xl">
-        {kicker && (
-          <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-muted">
-            <span aria-hidden className="mr-2 inline-block h-2.5 w-2.5 bg-brand" />
-            {kicker}
-          </p>
-        )}
-        <h1 className="text-4xl font-black leading-[1.05] md:text-5xl">{title}</h1>
+        {kicker && <p className="mb-2 text-sm font-bold text-muted">{kicker}</p>}
+        <h1 className="text-4xl font-extrabold leading-[1.05] md:text-5xl">{title}</h1>
         {description && <p className="mt-3 text-lg leading-relaxed text-muted">{description}</p>}
       </div>
-      {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
+      {actions && <div className="flex flex-wrap gap-3">{actions}</div>}
     </header>
   );
 }
 
 export function EmptyState({ title, children }: { title: string; children?: ReactNode }) {
   return (
-    <div className="border-2 border-dashed border-border px-6 py-12 text-center">
-      <p className="font-display text-xl font-bold">{title}</p>
-      {children && <div className="mt-2 text-sm text-muted">{children}</div>}
+    <div className="rounded-[var(--radius-card)] border-2 border-dashed border-ink/40 px-6 py-12 text-center">
+      <p className="font-display text-xl font-extrabold">{title}</p>
+      {children && <div className="mt-2 text-[15px] text-muted">{children}</div>}
     </div>
   );
 }
 
-const today = () =>
-  new Date().toLocaleDateString('en-IN', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
-
 /**
- * Page frame shared by all three apps, styled like a news masthead:
- * a black dateline strip, a serif wordmark with the app's section label,
- * a ruled section navigation, and a black footer.
+ * Page frame shared by all three apps: a white header with the highlighted
+ * wordmark, the app's label, pill navigation and the account area, then a
+ * plain footer. `strip` is a short line shown in the footer.
  */
 export function AppShell({
   appName,
@@ -302,9 +297,9 @@ export function AppShell({
   appName: string;
   nav?: ReactNode;
   account?: ReactNode;
-  /** Short text on the right of the dateline strip. */
+  /** Short line about the app, shown in the footer. */
   strip?: ReactNode;
-  /** Shows the section label in red (the admin "control room"). */
+  /** Shows the app label in red (the admin "control room"). */
   alertLabel?: boolean;
   children: ReactNode;
 }) {
@@ -312,55 +307,42 @@ export function AppShell({
     <div className="flex min-h-screen flex-col">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:bg-brand focus:p-2 focus:text-black"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:rounded-lg focus:border-2 focus:border-ink focus:bg-brand focus:p-2 focus:text-[#16161a]"
       >
         Skip to content
       </a>
-      <div className="bg-night text-[11px] font-semibold uppercase tracking-[0.18em] text-white/80">
-        <div className="mx-auto flex h-8 max-w-6xl items-center justify-between gap-4 px-4">
-          <span className="truncate">{today()}</span>
-          <span className="hidden truncate sm:inline">{strip}</span>
-        </div>
-      </div>
-      <header className="bg-surface">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-4 py-4">
-          <a href="/" className="flex items-baseline gap-3">
-            <span
-              aria-hidden
-              className="inline-block h-7 w-5 self-center border-[5px] border-brand"
-            />
-            <span className="font-display text-3xl font-black uppercase tracking-tight md:text-4xl">
-              Tutora
+      <header className="border-b-2 border-ink bg-surface">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-4 py-3.5">
+          <a href="/" className="flex items-center gap-2.5">
+            <span className="mark font-display text-[28px] font-extrabold tracking-[-0.03em]">
+              tutora
             </span>
             <span
               className={cn(
-                'text-xs font-bold uppercase tracking-[0.25em]',
-                alertLabel ? 'text-danger' : 'text-muted',
+                'rounded-full border-2 px-2 py-0.5 text-xs font-bold',
+                alertLabel ? 'border-danger text-danger' : 'border-ink text-text',
               )}
             >
               {appName}
             </span>
           </a>
-          <div className="ml-auto flex flex-wrap items-center gap-2 text-sm">{account}</div>
-        </div>
-        <div className="border-y-2 border-text">
           <nav
             aria-label="Sections"
-            className="mx-auto flex max-w-6xl items-center gap-1 overflow-x-auto px-2 text-xs font-bold uppercase tracking-[0.14em]"
+            className="order-last -mx-1 flex w-full items-center gap-1 overflow-x-auto px-1 pb-0.5 text-[15px]"
           >
             {nav}
           </nav>
+          <div className="ml-auto flex flex-wrap items-center gap-2 text-sm">{account}</div>
         </div>
       </header>
       <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
         {children}
       </main>
-      <footer className="bg-night text-white/70">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-8 text-xs">
-          <span className="font-display text-xl font-black uppercase text-white">Tutora</span>
-          <span>
-            Learn any skill from verified people. Sessions are educational, never financial advice.
-          </span>
+      <footer className="border-t-2 border-ink bg-surface">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-6 text-sm text-muted">
+          <span className="mark font-display text-xl font-extrabold text-text">tutora</span>
+          {strip && <span>{strip}</span>}
+          <span>Sessions are for learning, never financial advice.</span>
         </div>
       </footer>
     </div>
@@ -369,4 +351,4 @@ export function AppShell({
 
 /** Class for section-nav links; TanStack adds `.active` to the current one. */
 export const navLinkClass =
-  'whitespace-nowrap border-b-4 border-transparent px-3 py-3 text-muted hover:text-text [&.active]:border-brand [&.active]:text-text';
+  'whitespace-nowrap rounded-[10px] px-3 py-2 font-medium text-text hover:bg-sunken [&.active]:bg-ink [&.active]:text-bg';

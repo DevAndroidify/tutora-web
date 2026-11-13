@@ -31,16 +31,26 @@ export function NewRequestPage({ skillSlug }: { skillSlug?: string }) {
       <PageHeader
         kicker="New request"
         title="What do you want to learn?"
-        description="Tutors verified for this skill see your request and send sealed bids. Nobody sees anyone else's price."
+        description="Tutors who teach this see your question and send sealed offers. Nobody sees anyone else's price."
       />
-      <div className="max-w-3xl">
-        <RequestForm
-          mode="create"
-          initialSkill={preset.data ? { id: preset.data.id, name: preset.data.name } : null}
-          submitting={create.isPending}
-          error={create.error}
-          onSubmit={(body, publish) => create.mutate({ body, publish })}
-        />
+      <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+        <div className="lift-lg rounded-[var(--radius-card)] border-2 border-ink bg-surface p-6 md:p-8">
+          <RequestForm
+            mode="create"
+            initialSkill={preset.data ? { id: preset.data.id, name: preset.data.name } : null}
+            submitting={create.isPending}
+            error={create.error}
+            onSubmit={(body, publish) => create.mutate({ body, publish })}
+          />
+        </div>
+        <aside className="rounded-[var(--radius-card)] border-2 border-ink bg-mint p-6">
+          <h2 className="text-xl font-extrabold">Questions that get better offers</h2>
+          <ul className="mt-3 flex list-disc flex-col gap-2 pl-5 text-[15px] leading-relaxed">
+            <li>Say what you already know, not just what you don&apos;t.</li>
+            <li>Name a goal or a date, like an exam in March.</li>
+            <li>Mention when you&apos;re free, so offers fit your day.</li>
+          </ul>
+        </aside>
       </div>
     </>
   );

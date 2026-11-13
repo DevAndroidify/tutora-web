@@ -94,7 +94,7 @@ function PoolHeadline({ invite: i }: { invite: PoolInvite }) {
       <Kicker className="mb-1">
         {i.pool.skill.name} · {humanize(i.pool.level)}
       </Kicker>
-      <p className="text-xs font-semibold uppercase tracking-[0.1em] text-muted">
+      <p className="text-xs font-semibold text-muted">
         {i.pool.joined} joined · {i.pool.invited} invited · up to {i.pool.seatCap} seats
       </p>
     </>
@@ -120,7 +120,7 @@ function InviteCard({ invite: i }: { invite: PoolInvite }) {
     <li className="grid gap-4 border-t-8 border-brand bg-surface p-6 md:grid-cols-[1fr_auto] md:items-center">
       <div>
         <PoolHeadline invite={i} />
-        <h3 className="mt-2 text-2xl font-black leading-tight">
+        <h3 className="mt-2 text-2xl font-extrabold leading-tight">
           Join a group for{' '}
           <Link to="/requests/$id" params={{ id: i.requestId }} className="underline">
             your request
@@ -224,7 +224,7 @@ function GroupOffers({ invite }: { invite: PoolInvite }) {
           Verified tutors can see this group now. Offers appear here.
         </EmptyState>
       ) : (
-        <ol className="flex flex-col gap-6">
+        <ol className="grid items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3">
           {shown.map((b, n) => (
             <BidCard
               key={b.id}

@@ -15,6 +15,7 @@ import {
   Alert,
   Button,
   buttonClass,
+  cn,
   EmptyState,
   Loading,
   Modal,
@@ -76,7 +77,7 @@ export function BidsSection({ request }: { request: LearningRequest }) {
     <section aria-labelledby="bids">
       <SectionHeader
         id="bids"
-        title={`Sealed bids${bids.data ? ` · ${bids.data.length}` : ''}`}
+        title={`Offers${bids.data ? ` · ${bids.data.length}` : ''}`}
         action={
           bids.data && bids.data.length > 1 ? (
             <Select
@@ -117,7 +118,7 @@ export function BidsSection({ request }: { request: LearningRequest }) {
             : null}
         </EmptyState>
       ) : (
-        <ol className="flex flex-col gap-6">
+        <ol className="grid items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3">
           {bids.data.map((b, i) => (
             <BidCard
               key={b.id}
@@ -173,85 +174,106 @@ export function BidCard({
   acceptLabel?: string;
 }) {
   const [why, setWhy] = useState(false);
+  const best = rank === 1;
   return (
-    <li className="grid gap-6 border-t-4 border-text bg-surface p-6 md:grid-cols-[auto_1fr_auto]">
-      {rank !== null && (
-        <span className="font-display text-6xl font-black leading-none text-brand">{rank}</span>
+    <li
+      className={cn(
+        'flex flex-col overflow-hidden rounded-[var(--radius-card)] border-2 border-ink bg-surface',
+        best && 'lift-lg',
       )}
-      <div className="min-w-0">
-        <div className="flex flex-wrap items-center gap-2">
-          <Link
-            to="/tutors/$userId"
-            params={{ userId: b.tutor.userId }}
-            className="font-display text-2xl font-black hover:underline"
-          >
-            {b.tutor.fullName}
-          </Link>
-          {b.tutor.badge !== 'NONE' && (
-            <Tag tone={b.tutor.badge === 'EXPERT' ? 'dark' : 'brand'}>
-              {b.tutor.badge.toLowerCase()}
-            </Tag>
+    >
+      {rank !== null && (
+        <p
+          className={cn(
+            'border-b-2 border-ink px-5 py-2 text-sm font-bold',
+            best ? 'bg-brand text-[#16161a]' : 'bg-sunken text-text',
           )}
-          {b.status !== 'SUBMITTED' && <Tag>{b.status.toLowerCase()}</Tag>}
-        </div>
-        {b.tutor.headline && <p className="text-sm text-muted">{b.tutor.headline}</p>}
-        <p className="mt-3 text-sm font-semibold">
-          {formatDateTime(b.proposedStartAt)} · {b.durationMinutes} min
+        >
+          {best ? 'Best match' : `#${rank}`} · {Math.round(b.score.total * 100)}% match
         </p>
+      )}
+      <div className="flex flex-1 flex-col gap-4 p-5">
+        <div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              to="/tutors/$userId"
+              params={{ userId: b.tutor.userId }}
+              className="font-display text-2xl font-extrabold hover:underline"
+            >
+              {b.tutor.fullName}
+            </Link>
+            {b.tutor.badge !== 'NONE' && (
+              <Tag tone={b.tutor.badge === 'EXPERT' ? 'dark' : 'success'}>
+                {b.tutor.badge === 'EXPERT' ? 'Expert' : 'Verified'}
+              </Tag>
+            )}
+            {b.status !== 'SUBMITTED' && <Tag>{b.status.toLowerCase()}</Tag>}
+          </div>
+          {b.tutor.headline && <p className="mt-1 text-sm text-muted">{b.tutor.headline}</p>}
+        </div>
+        <div className="flex items-baseline gap-2">
+          <p className="font-display text-4xl font-extrabold">{formatINR(b.seatPricePaise)}</p>
+          {seats && <p className="text-sm font-bold text-muted">per seat · {seats}</p>}
+        </div>
+        <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 border-y-2 border-dashed border-border py-3 text-[15px]">
+          <dt className="text-muted">Starts</dt>
+          <dd className="font-bold">{formatDateTime(b.proposedStartAt)}</dd>
+          <dt className="text-muted">Length</dt>
+          <dd className="font-bold">{b.durationMinutes} min</dd>
+        </dl>
         {b.approachText && (
-          <p className="mt-2 whitespace-pre-line font-display text-lg leading-relaxed">
-            {b.approachText}
-          </p>
+          <p className="whitespace-pre-line text-[15px] leading-relaxed">{b.approachText}</p>
         )}
         {b.approachMediaUrl && (
           <a
             href={b.approachMediaUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="link mt-2 inline-block text-sm"
+            className="link self-start text-sm"
           >
             Watch the tutor&apos;s intro
           </a>
         )}
-        <button
-          type="button"
-          aria-expanded={why}
-          onClick={() => setWhy(!why)}
-          className="mt-4 text-xs font-bold uppercase tracking-[0.12em] text-muted hover:text-text"
-        >
-          {why ? '▾' : '▸'} Why this ranking · match {Math.round(b.score.total * 100)}%
-        </button>
-        {why && (
-          <ul className="mt-3 flex flex-col gap-2">
-            {b.score.components.map((c) => (
-              <li key={c.key} className="text-sm">
-                <div className="flex justify-between gap-3">
-                  <span className="font-semibold">{c.label}</span>
-                  <span className="text-muted">
-                    {Math.round(c.value * 100)}% · weight {Math.round(c.weight * 100)}%
-                  </span>
-                </div>
-                <div className="mt-1 h-1.5 bg-border" aria-hidden>
+        <div>
+          <button
+            type="button"
+            aria-expanded={why}
+            onClick={() => setWhy(!why)}
+            className="text-sm font-bold text-muted underline underline-offset-4 hover:text-text"
+          >
+            {why ? 'Hide the ranking' : 'Why this ranking?'}
+          </button>
+          {why && (
+            <ul className="mt-3 flex flex-col gap-2.5">
+              {b.score.components.map((c) => (
+                <li key={c.key} className="text-sm">
+                  <div className="flex justify-between gap-3">
+                    <span className="font-bold">{c.label}</span>
+                    <span className="text-muted">
+                      {Math.round(c.value * 100)}% · counts {Math.round(c.weight * 100)}%
+                    </span>
+                  </div>
                   <div
-                    className="h-full bg-brand"
-                    style={{ width: `${Math.round(c.value * 100)}%` }}
-                  />
-                </div>
-                {c.note && <p className="mt-1 text-xs text-muted">{c.note}</p>}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-      <div className="flex flex-col items-start gap-3 md:items-end">
-        <p className="font-display text-4xl font-black">{formatINR(b.seatPricePaise)}</p>
-        {seats && (
-          <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted">
-            per seat · {seats}
-          </p>
-        )}
+                    className="mt-1 h-2.5 overflow-hidden rounded-full border-2 border-ink bg-sunken"
+                    aria-hidden
+                  >
+                    <div
+                      className="h-full bg-brand"
+                      style={{ width: `${Math.round(c.value * 100)}%` }}
+                    />
+                  </div>
+                  {c.note && <p className="mt-1 text-xs text-muted">{c.note}</p>}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
         {canAccept && (
-          <button type="button" className={buttonClass('primary')} onClick={onAccept}>
+          <button
+            type="button"
+            className={buttonClass(best ? 'primary' : 'secondary', 'mt-auto w-full')}
+            onClick={onAccept}
+          >
             {acceptLabel}
           </button>
         )}

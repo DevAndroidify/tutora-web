@@ -69,7 +69,7 @@ function VerificationBanner({ profile }: { profile: TutorProfile | null }) {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h2 id="verification" className="text-2xl font-black">
+            <h2 id="verification" className="text-2xl font-extrabold">
               Verification
             </h2>
             <StatusTag status={status} />
@@ -263,7 +263,7 @@ function SkillsSection({
           editing?.id === c.skill.id ? null : (
             <li key={c.skill.id} className="flex flex-col border border-border bg-surface p-5">
               <div className="flex items-start justify-between gap-3">
-                <h3 className="text-xl font-black">{c.skill.name}</h3>
+                <h3 className="text-xl font-extrabold">{c.skill.name}</h3>
                 <StatusTag status={c.status} />
               </div>
               <p className="mt-2 text-sm leading-relaxed">{c.summary}</p>
@@ -308,8 +308,8 @@ function SkillsSection({
         )}
       </ul>
       {(adding || editing) && profile && (
-        <Card className="mt-8 max-w-3xl border-t-8 border-t-brand">
-          <h3 className="mb-5 text-2xl font-black">
+        <Card className="lift-lg mt-8 max-w-3xl">
+          <h3 className="mb-5 text-2xl font-extrabold">
             {editing ? `Edit ${editing.name}` : 'Add a skill'}
           </h3>
           <ClaimForm
@@ -507,9 +507,7 @@ function SuggestionsSection() {
           </div>
         </form>
         <div>
-          <h3 className="mb-3 text-xs font-bold uppercase tracking-[0.14em] text-muted">
-            Your suggestions
-          </h3>
+          <h3 className="mb-3 text-xs font-bold text-muted">Your suggestions</h3>
           {list.data && list.data.length > 0 ? (
             <ul>
               {list.data.map((s) => (

@@ -78,15 +78,15 @@ export function RequestDetailPage({ id }: { id: string }) {
 
   return (
     <article className="flex flex-col gap-10">
-      <header className="border-b-4 border-text pb-6">
+      <header>
         <div className="mb-3 flex flex-wrap items-center gap-3">
           <Kicker>{r.skill.name}</Kicker>
           <StatusTag status={r.status} />
         </div>
-        <h1 className="max-w-4xl text-4xl font-black leading-[1.05] md:text-5xl">{r.title}</h1>
+        <h1 className="max-w-4xl text-4xl font-extrabold leading-[1.05] md:text-5xl">{r.title}</h1>
         {r.status === 'OPEN' && r.expiresAt && (
-          <p className="mt-3 text-sm font-semibold uppercase tracking-[0.1em] text-muted">
-            Taking bids · closes {timeFromNow(r.expiresAt)}
+          <p className="mt-3 text-sm font-semibold text-muted">
+            Taking offers · closes {timeFromNow(r.expiresAt)}
           </p>
         )}
         {(canEdit || canCancel) && !editing && (
@@ -122,6 +122,8 @@ export function RequestDetailPage({ id }: { id: string }) {
         )}
       </header>
 
+      {!editing && r.status !== 'DRAFT' && r.status !== 'POOLED' && <BidsSection request={r} />}
+
       {editing ? (
         <div className="max-w-3xl">
           <RequestForm
@@ -142,10 +144,8 @@ export function RequestDetailPage({ id }: { id: string }) {
               </Alert>
             )}
             <section aria-labelledby="brief">
-              <SectionHeader id="brief" title="The brief" />
-              <p className="whitespace-pre-line font-display text-lg leading-relaxed">
-                {r.description}
-              </p>
+              <SectionHeader id="brief" title="Your question" />
+              <p className="whitespace-pre-line text-[17px] leading-relaxed">{r.description}</p>
               {r.description.includes('[hidden]') && (
                 <p className="mt-3 text-xs text-muted">
                   Contact details were hidden. Talk and pay through Tutora so your money stays
@@ -179,7 +179,6 @@ export function RequestDetailPage({ id }: { id: string }) {
           </Link>
         </Alert>
       )}
-      {!editing && r.status !== 'DRAFT' && r.status !== 'POOLED' && <BidsSection request={r} />}
     </article>
   );
 }

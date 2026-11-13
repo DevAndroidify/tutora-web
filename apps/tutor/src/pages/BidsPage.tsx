@@ -46,15 +46,18 @@ export function BidsPage() {
           </Link>
         </EmptyState>
       ) : (
-        <ul>
+        <ul className="flex flex-col gap-3">
           {bids.data.map((b) => (
-            <li key={b.id} className="border-t border-border first:border-t-2 first:border-text">
+            <li
+              key={b.id}
+              className="rounded-[var(--radius-card)] border-2 border-ink bg-surface px-5"
+            >
               <Link
                 to="/requests/$id"
                 params={{ id: b.requestId }}
                 className="story flex flex-wrap items-center gap-6 py-5"
               >
-                <span className="w-32 font-display text-3xl font-black">
+                <span className="w-32 font-display text-3xl font-extrabold">
                   {formatINR(b.seatPricePaise)}
                 </span>
                 <div className="min-w-0 flex-1">
@@ -62,9 +65,7 @@ export function BidsPage() {
                     {formatDateTime(b.proposedStartAt)} · {b.durationMinutes} min
                   </p>
                   <p className="truncate text-sm text-muted">{b.approachText}</p>
-                  <p className="mt-1 text-[11px] uppercase tracking-[0.1em] text-muted">
-                    updated {timeFromNow(b.updatedAt)}
-                  </p>
+                  <p className="mt-1 text-xs text-muted">updated {timeFromNow(b.updatedAt)}</p>
                 </div>
                 <StatusTag status={b.status} />
               </Link>

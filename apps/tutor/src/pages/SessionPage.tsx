@@ -72,7 +72,7 @@ export function SessionPage({ id }: { id: string }) {
 
   return (
     <article className="flex flex-col gap-10">
-      <header className="border-b-4 border-text pb-6">
+      <header>
         <Link to="/sessions" className="link text-xs">
           ← Sessions
         </Link>
@@ -80,10 +80,10 @@ export function SessionPage({ id }: { id: string }) {
           <Kicker>{request.data?.skill.name ?? 'Session'}</Kicker>
           <StatusTag status={seat.sessionStatus} />
         </div>
-        <h1 className="mt-2 max-w-4xl text-4xl font-black leading-[1.05] md:text-5xl">
+        <h1 className="mt-2 max-w-4xl text-4xl font-extrabold leading-[1.05] md:text-5xl">
           {request.data?.title ?? 'Your session'}
         </h1>
-        <p className="mt-3 text-sm font-semibold uppercase tracking-[0.1em] text-muted">
+        <p className="mt-3 text-sm font-semibold text-muted">
           with {learner} · {formatDateTime(seat.startsAt)} · {seat.durationMinutes} min ·{' '}
           {formatINR(seat.amountPaise)}
         </p>

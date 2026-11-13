@@ -14,16 +14,16 @@ function PoolRow({ pool }: { pool: OpenPool }) {
   const [open, setOpen] = useState(false);
   const [sent, setSent] = useState(false);
   return (
-    <li className="border-t border-border py-6 first:border-t-2 first:border-text">
+    <li className="rounded-[var(--radius-card)] border-2 border-ink bg-surface p-5">
       <div className="grid gap-3 md:grid-cols-[1fr_auto] md:items-center">
         <div>
           <Kicker className="mb-1">
             {skill.data?.name ?? 'Skill'} · {humanize(pool.level)}
           </Kicker>
-          <h2 className="text-2xl font-black leading-tight">
+          <h2 className="text-2xl font-extrabold leading-tight">
             {pool.members} learners want the same thing
           </h2>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.1em] text-muted">
+          <p className="mt-1 text-xs font-semibold text-muted">
             Up to {pool.seatCap} seats · learners stay anonymous until they pay
           </p>
         </div>
@@ -89,7 +89,7 @@ export function GroupsPage() {
           your approved skills.
         </EmptyState>
       ) : (
-        <ul>
+        <ul className="flex flex-col gap-3">
           {pools.data.map((p) => (
             <PoolRow key={p.id} pool={p} />
           ))}

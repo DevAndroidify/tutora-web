@@ -120,7 +120,7 @@ function PaymentsTab() {
           <table className="w-full min-w-[640px] text-sm">
             <caption className="sr-only">Payments, newest first</caption>
             <thead>
-              <tr className="border-b-2 border-text text-left text-xs uppercase tracking-[0.12em]">
+              <tr className="border-b-2 border-text text-left text-xs">
                 <th scope="col" className="py-2">
                   Created
                 </th>
@@ -219,7 +219,9 @@ function OwedRow({ account, onPay }: { account: LedgerBalance; onPay: () => void
         <p className="font-mono text-xs text-muted">{userId}</p>
       </div>
       <div className="flex items-center gap-4">
-        <span className="font-display text-2xl font-black">{formatINR(account.balancePaise)}</span>
+        <span className="font-display text-2xl font-extrabold">
+          {formatINR(account.balancePaise)}
+        </span>
         <Button onClick={onPay}>Record payout</Button>
       </div>
     </li>

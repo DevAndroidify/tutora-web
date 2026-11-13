@@ -34,7 +34,7 @@ export function AccountPage() {
             />
           </Card>
           <Card className="border-t-8 border-t-brand">
-            <h2 className="text-xl font-black">Want to teach?</h2>
+            <h2 className="text-xl font-extrabold">Want to teach?</h2>
             <p className="mt-2 text-sm text-muted">
               Use this same account in the tutor app to build a profile and get verified.
             </p>

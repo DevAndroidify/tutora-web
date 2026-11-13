@@ -105,13 +105,13 @@ function SuggestionItem({
     onSuccess: done,
   });
   return (
-    <li className="flex flex-col border-t-4 border-text bg-surface p-5">
+    <li className="flex flex-col rounded-[var(--radius-card)] border-2 border-ink bg-surface p-5">
       <div className="flex items-start justify-between gap-3">
         <div>
           <Kicker className="mb-1">
             {section} · {formatDate(s.createdAt)}
           </Kicker>
-          <h2 className="text-2xl font-black">{s.name}</h2>
+          <h2 className="text-2xl font-extrabold">{s.name}</h2>
         </div>
         <StatusTag status={s.status} />
       </div>

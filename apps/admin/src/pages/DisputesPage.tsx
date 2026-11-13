@@ -110,7 +110,7 @@ function DisputeCard({ dispute }: { dispute: AdminDispute }) {
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <Kicker className="mb-1">Opened {timeFromNow(dispute.openedAt)}</Kicker>
-            <h2 className="text-2xl font-black leading-tight">
+            <h2 className="text-2xl font-extrabold leading-tight">
               {DISPUTE_REASONS[dispute.reason] ?? dispute.reason}
             </h2>
           </div>

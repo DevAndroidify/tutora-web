@@ -77,9 +77,12 @@ export function RequestsPage() {
         </EmptyState>
       ) : (
         <>
-          <ul>
+          <ul className="flex flex-col gap-3">
             {list.data.items.map((r) => (
-              <li key={r.id} className="border-t border-border first:border-t-2 first:border-text">
+              <li
+                key={r.id}
+                className="rounded-[var(--radius-card)] border-2 border-ink bg-surface px-5"
+              >
                 <Link
                   to="/requests/$id"
                   params={{ id: r.id }}
@@ -87,11 +90,11 @@ export function RequestsPage() {
                 >
                   <div>
                     <Kicker className="mb-1">{r.skill.name}</Kicker>
-                    <h2 className="story-title text-2xl font-black leading-tight">{r.title}</h2>
-                    <p className="mt-1 text-xs font-semibold uppercase tracking-[0.1em] text-muted">
+                    <h2 className="story-title text-2xl font-extrabold leading-tight">{r.title}</h2>
+                    <p className="mt-1 text-xs font-semibold text-muted">
                       {r.level.toLowerCase()} · budget {formatINR(r.budgetHintPaise)} ·{' '}
                       {r.status === 'OPEN' && r.expiresAt
-                        ? `bids close ${timeFromNow(r.expiresAt)}`
+                        ? `offers close ${timeFromNow(r.expiresAt)}`
                         : `created ${timeFromNow(r.createdAt)}`}
                     </p>
                   </div>

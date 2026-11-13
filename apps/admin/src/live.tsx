@@ -26,7 +26,7 @@ export function AdminLive() {
   });
   return (
     <span
-      className="hidden items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-muted sm:inline-flex"
+      className="hidden items-center gap-1.5 text-xs font-extrabold text-muted sm:inline-flex"
       title={
         status === 'live' ? 'Receiving live updates' : 'Live updates paused; pages refresh on open'
       }

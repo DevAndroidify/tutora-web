@@ -86,7 +86,7 @@ function CategoriesSection() {
               className={`flex items-center justify-between gap-3 border-b border-border py-3 ${c.parentId ? 'pl-6' : ''}`}
             >
               <div>
-                <p className={c.parentId ? 'font-semibold' : 'font-display text-lg font-black'}>
+                <p className={c.parentId ? 'font-semibold' : 'font-display text-lg font-extrabold'}>
                   {c.name}
                 </p>
                 <p className="text-xs text-muted">/{c.slug}</p>
@@ -268,7 +268,7 @@ function SkillsSection() {
               >
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <p className="font-display text-xl font-black">{s.name}</p>
+                    <p className="font-display text-xl font-extrabold">{s.name}</p>
                     {!s.isActive && <Tag tone="danger">Hidden</Tag>}
                     {s.learnerNotice && <Tag tone="warning">Notice</Tag>}
                   </div>

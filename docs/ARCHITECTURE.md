@@ -88,15 +88,15 @@ manual check against the local backend, commit as `phase-NN: …`, then stop and
 | 13 | Group sessions | Pool invitations, group offers, per-seat payment, tutor group bids | 18, 19 |
 | 14 | Hardening and results | Playwright end-to-end journeys, accessibility pass, performance budgets, production images (static + nginx), CSP, results | 20 |
 
-## 5. Design system: editorial
+## 5. Design system: Highlighter
 
-The three apps share one look, modelled on news and nature-magazine front pages rather than on SaaS dashboards.
+The three apps share one look: a student's marked-up notebook rather than a SaaS dashboard.
 
-- **Type:** Playfair Display (black weights) for headlines, Inter for interface text; small uppercase tracked kickers above headlines.
-- **Colour:** newsprint paper (`#f5f3ee`), ink-black text, one signature yellow (`--color-brand: #ffcc00`) for buttons, kicker squares, active-nav underlines and link underlines. Red only for danger and the admin "Control room" label. Full dark mode.
-- **Structure:** black dateline strip, serif wordmark masthead with the app's section label (Learn / Teach / Control room), ruled section navigation, heavy 4px rules above every section, black footer.
-- **Art without photos:** `CoverArt` generates a deterministic cover per skill or tutor (deep natural gradients with contour-map lines), so cards read as editorial stories.
-- **Components** (`@tutora/ui`): `AppShell`, `PageHeader`, `SectionHeader`, `Kicker`, `StoryCard`, `CoverArt`, `Tag`, `StatusTag`, `Tabs`, `Pagination`, `Stat`, `Modal`, `Facts`, plus form controls (`Field`, `Textarea`, `Select`, `Button`, `buttonClass` for router links).
+- **Type:** Bricolage Grotesque (600/800) for headings, DM Sans for interface text. Sentence case everywhere, no tracked uppercase labels.
+- **Colour:** warm off-white paper (`#fbfaf5`), ink (`#16161a`) for text and 2px outlines, and highlighter yellow (`--color-brand: #fff27a`) for primary actions, the best offer and the `.mark` highlight behind key words. Mint, pink and sky are supporting fills for notes, tags and alerts. Red only for danger. Dark mode keeps the same structure.
+- **Shape:** 12px controls, 18px cards, 2px ink borders, and an offset "printed" shadow (`.lift`, `.lift-lg`) only on the one thing that matters most on a screen.
+- **Structure:** white header with the highlighted wordmark, the app label pill (Learn / Teach / Control room) and pill navigation; plain footer.
+- **Components** (`@tutora/ui`): `AppShell`, `PageHeader`, `SectionHeader`, `Kicker`, `StoryCard`, `CoverArt` (flat pastel cover with an initial), `Tag`, `StatusTag`, `Tabs`, `Pagination`, `Stat`, `Modal`, `Facts`, plus form controls (`Field`, `Textarea`, `Select`, `Button`, `buttonClass` for router links).
 - Tailwind scans `packages/ui`, `packages/core` and each app's `src`; base element styles live in `@layer base` so utilities always win.
 
 ## 6. Progress

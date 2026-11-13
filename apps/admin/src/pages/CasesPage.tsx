@@ -53,20 +53,23 @@ export function CasesPage() {
       ) : cases.data.length === 0 ? (
         <EmptyState title={status === 'OPEN' ? 'No open cases' : 'Nothing here'} />
       ) : (
-        <ul>
+        <ul className="flex flex-col gap-3">
           {[...cases.data]
             .sort(
               (a, b) => b.priority - a.priority || b.lastActivityAt.localeCompare(a.lastActivityAt),
             )
             .map((c) => (
-              <li key={c.id} className="border-t border-border first:border-t-2 first:border-text">
+              <li
+                key={c.id}
+                className="rounded-[var(--radius-card)] border-2 border-ink bg-surface px-5"
+              >
                 <Link
                   to="/cases/$id"
                   params={{ id: c.id }}
                   className="story grid gap-2 py-5 md:grid-cols-[auto_1fr_auto] md:items-center md:gap-6"
                 >
                   <span
-                    className={`flex size-12 items-center justify-center font-display text-2xl font-black ${
+                    className={`flex size-12 items-center justify-center font-display text-2xl font-extrabold ${
                       c.priority >= 7
                         ? 'bg-danger text-white'
                         : c.priority >= 4
@@ -78,8 +81,8 @@ export function CasesPage() {
                     {c.priority}
                   </span>
                   <div>
-                    <h2 className="story-title text-2xl font-black">{c.subjectName}</h2>
-                    <p className="mt-1 text-xs font-semibold uppercase tracking-[0.1em] text-muted">
+                    <h2 className="story-title text-2xl font-extrabold">{c.subjectName}</h2>
+                    <p className="mt-1 text-xs font-semibold text-muted">
                       {c.reportCount} {c.reportCount === 1 ? 'report' : 'reports'} · {c.flagCount}{' '}
                       {c.flagCount === 1 ? 'flag' : 'flags'} · active{' '}
                       {timeFromNow(c.lastActivityAt)}

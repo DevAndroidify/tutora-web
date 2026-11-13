@@ -103,11 +103,11 @@ function ProfileItem({ profile: p }: { profile: ProfileReview }) {
     },
   });
   return (
-    <li className="border-t-4 border-text bg-surface p-6">
+    <li className="rounded-[var(--radius-card)] border-2 border-ink bg-surface p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <Kicker className="mb-2">Submitted {formatDate(p.verificationSubmittedAt)}</Kicker>
-          <h2 className="text-3xl font-black">{p.fullName}</h2>
+          <h2 className="text-3xl font-extrabold">{p.fullName}</h2>
           <p className="text-sm text-muted">{p.email}</p>
         </div>
         <StatusTag status={p.verificationStatus} />
@@ -116,15 +116,13 @@ function ProfileItem({ profile: p }: { profile: ProfileReview }) {
         <div>
           {p.headline && <p className="font-display text-xl font-bold">{p.headline}</p>}
           {p.bio && <p className="mt-2 whitespace-pre-line text-sm leading-relaxed">{p.bio}</p>}
-          <p className="mt-3 text-xs font-bold uppercase tracking-[0.12em] text-muted">
+          <p className="mt-3 text-xs font-bold text-muted">
             {p.experienceYears ?? '?'} years · {p.languages.join(', ') || 'no languages'} · UPI{' '}
             {p.payoutUpiId ? 'set' : 'missing'}
           </p>
         </div>
         <div>
-          <h3 className="mb-2 text-xs font-bold uppercase tracking-[0.14em] text-muted">
-            Skill claims
-          </h3>
+          <h3 className="mb-2 text-xs font-bold text-muted">Skill claims</h3>
           <ul className="flex flex-col gap-2">
             {p.skills.map((s) => (
               <li
@@ -227,11 +225,11 @@ function SkillItem({ claim: c }: { claim: SkillReview }) {
     },
   });
   return (
-    <li className="flex flex-col border-t-4 border-text bg-surface p-5">
+    <li className="flex flex-col rounded-[var(--radius-card)] border-2 border-ink bg-surface p-5">
       <div className="flex items-start justify-between gap-3">
         <div>
           <Kicker className="mb-1">{c.tutorName}</Kicker>
-          <h2 className="text-2xl font-black">{c.skill.name}</h2>
+          <h2 className="text-2xl font-extrabold">{c.skill.name}</h2>
         </div>
         <StatusTag status={c.status} />
       </div>
@@ -241,7 +239,7 @@ function SkillItem({ claim: c }: { claim: SkillReview }) {
         </p>
       )}
       <p className="mt-3 text-sm leading-relaxed">{c.summary}</p>
-      <p className="mt-2 text-xs font-bold uppercase tracking-[0.12em] text-muted">
+      <p className="mt-2 text-xs font-bold text-muted">
         {c.experienceYears ?? '?'} years · tutor{' '}
         {c.tutorVerificationStatus.toLowerCase().replace('_', ' ')}
       </p>
@@ -300,7 +298,7 @@ function StatusFilter<T extends string>({
           type="button"
           aria-pressed={o === value}
           onClick={() => onChange(o)}
-          className={`border-2 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.1em] ${
+          className={`border-2 px-3 py-1.5 text-xs font-bold ${
             o === value ? 'border-text bg-text text-bg' : 'border-border hover:border-text'
           }`}
         >
