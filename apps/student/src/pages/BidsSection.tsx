@@ -176,14 +176,14 @@ export function BidCard({
   return (
     <li className="grid gap-6 border-t-4 border-text bg-surface p-6 md:grid-cols-[auto_1fr_auto]">
       {rank !== null && (
-        <span className="font-display text-6xl font-black leading-none text-brand">{rank}</span>
+        <span className="font-display text-6xl font-extrabold leading-none text-brand">{rank}</span>
       )}
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
           <Link
             to="/tutors/$userId"
             params={{ userId: b.tutor.userId }}
-            className="font-display text-2xl font-black hover:underline"
+            className="font-display text-2xl font-extrabold hover:underline"
           >
             {b.tutor.fullName}
           </Link>
@@ -217,7 +217,7 @@ export function BidCard({
           type="button"
           aria-expanded={why}
           onClick={() => setWhy(!why)}
-          className="mt-4 text-xs font-bold uppercase tracking-[0.12em] text-muted hover:text-text"
+          className="mt-4 text-xs font-bold text-muted hover:text-text"
         >
           {why ? '▾' : '▸'} Why this ranking · match {Math.round(b.score.total * 100)}%
         </button>
@@ -244,12 +244,8 @@ export function BidCard({
         )}
       </div>
       <div className="flex flex-col items-start gap-3 md:items-end">
-        <p className="font-display text-4xl font-black">{formatINR(b.seatPricePaise)}</p>
-        {seats && (
-          <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted">
-            per seat · {seats}
-          </p>
-        )}
+        <p className="font-display text-4xl font-extrabold">{formatINR(b.seatPricePaise)}</p>
+        {seats && <p className="text-xs font-bold text-muted">per seat · {seats}</p>}
         {canAccept && (
           <button type="button" className={buttonClass('primary')} onClick={onAccept}>
             {acceptLabel}

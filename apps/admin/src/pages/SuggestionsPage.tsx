@@ -111,7 +111,7 @@ function SuggestionItem({
           <Kicker className="mb-1">
             {section} · {formatDate(s.createdAt)}
           </Kicker>
-          <h2 className="text-2xl font-black">{s.name}</h2>
+          <h2 className="text-2xl font-extrabold">{s.name}</h2>
         </div>
         <StatusTag status={s.status} />
       </div>

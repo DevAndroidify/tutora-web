@@ -12,11 +12,11 @@ export function HomePage() {
       hero={
         <section className="grid gap-6 border-b-4 border-text pb-10 md:grid-cols-[1fr_auto] md:items-end">
           <div>
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-muted">
+            <p className="mb-3 text-xs font-bold text-muted">
               <span aria-hidden className="mr-2 inline-block h-2.5 w-2.5 bg-brand" />
               {name ? `Welcome back, ${name}` : 'The learning marketplace'}
             </p>
-            <h1 className="max-w-4xl text-5xl font-black leading-[0.98] md:text-7xl">
+            <h1 className="max-w-4xl text-5xl font-extrabold leading-[0.98] md:text-7xl">
               Learn anything from people who have done it.
             </h1>
             <p className="mt-5 max-w-2xl font-display text-xl leading-relaxed text-muted">

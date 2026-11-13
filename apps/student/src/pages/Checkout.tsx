@@ -149,10 +149,10 @@ export function Checkout({ seat }: { seat: SessionSeat }) {
       className="grid gap-0 border-4 border-text lg:grid-cols-[3fr_2fr]"
     >
       <div className="bg-night p-8 text-white">
-        <p id="pay" className="text-xs font-bold uppercase tracking-[0.2em] text-brand">
+        <p id="pay" className="text-xs font-bold text-brand">
           {expired ? 'Seat released' : 'Seat held for you'}
         </p>
-        <p className="mt-2 font-display text-7xl font-black leading-none">
+        <p className="mt-2 font-display text-7xl font-extrabold leading-none">
           {expired ? '0:00' : left !== null ? formatCountdown(left) : '—'}
         </p>
         <p className="mt-4 max-w-md text-sm text-white/70">
@@ -163,7 +163,7 @@ export function Checkout({ seat }: { seat: SessionSeat }) {
       </div>
       <div className="flex flex-col gap-4 bg-surface p-8">
         <div className="flex items-center justify-between gap-3">
-          <p className="font-display text-5xl font-black">{formatINR(seat.amountPaise)}</p>
+          <p className="font-display text-5xl font-extrabold">{formatINR(seat.amountPaise)}</p>
           <Tag tone="warning">Test mode</Tag>
         </div>
         <p className="text-xs text-muted">
@@ -197,9 +197,7 @@ export function Checkout({ seat }: { seat: SessionSeat }) {
           </Button>
         ) : p.checkout?.provider === 'fake' ? (
           <div className="flex flex-col gap-3 border-2 border-dashed border-border p-4">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-muted">
-              Payment simulator (development)
-            </p>
+            <p className="text-xs font-bold text-muted">Payment simulator (development)</p>
             <p className="text-sm">
               Order {p.checkout.orderId}. Approve it as if you paid in a UPI app.
             </p>

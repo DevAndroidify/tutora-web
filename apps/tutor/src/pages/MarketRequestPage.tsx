@@ -100,8 +100,8 @@ export function MarketRequestPage({ id }: { id: string }) {
           </Kicker>
           <StatusTag status={r.status} />
         </div>
-        <h1 className="max-w-4xl text-4xl font-black leading-[1.05] md:text-5xl">{r.title}</h1>
-        <p className="mt-3 text-sm font-semibold uppercase tracking-[0.1em] text-muted">
+        <h1 className="max-w-4xl text-4xl font-extrabold leading-[1.05] md:text-5xl">{r.title}</h1>
+        <p className="mt-3 text-sm font-semibold text-muted">
           {r.studentDisplayName} · {r.bidCount} {r.bidCount === 1 ? 'bid' : 'bids'} so far
           {open && r.expiresAt ? ` · closes ${timeFromNow(r.expiresAt)}` : ''}
         </p>
@@ -153,7 +153,9 @@ export function MarketRequestPage({ id }: { id: string }) {
           {bid && !editing ? (
             <Card className="border-t-8 border-t-brand">
               <div className="flex items-start justify-between gap-3">
-                <p className="font-display text-5xl font-black">{formatINR(bid.seatPricePaise)}</p>
+                <p className="font-display text-5xl font-extrabold">
+                  {formatINR(bid.seatPricePaise)}
+                </p>
                 <StatusTag status={bid.status} />
               </div>
               <p className="mt-2 text-sm font-semibold">

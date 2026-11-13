@@ -77,7 +77,7 @@ export function CaseDetailPage({ id }: { id: string }) {
             <Tag tone="dark">{d.case.assignedTo === me ? 'Assigned to you' : 'Assigned'}</Tag>
           )}
         </div>
-        <h1 className="mt-2 text-5xl font-black leading-[1.02]">{d.subject.fullName}</h1>
+        <h1 className="mt-2 text-5xl font-extrabold leading-[1.02]">{d.subject.fullName}</h1>
         <p className="mt-2 text-sm text-muted">
           {d.subject.email} · account <strong>{d.subject.status.toLowerCase()}</strong> ·{' '}
           {d.history.strikes} past {d.history.strikes === 1 ? 'strike' : 'strikes'},{' '}
@@ -200,7 +200,7 @@ function ActionForm({ caseId, onDone }: { caseId: string; onDone: (d: CaseDetail
   const severe = action === 'SUSPEND' || action === 'BAN';
   return (
     <Card className="border-t-8 border-t-brand">
-      <h2 className="mb-4 text-2xl font-black">Decide</h2>
+      <h2 className="mb-4 text-2xl font-extrabold">Decide</h2>
       <form
         className="flex flex-col gap-4"
         onSubmit={(e) => {

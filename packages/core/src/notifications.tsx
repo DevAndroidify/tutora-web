@@ -45,7 +45,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             role="status"
             className="pointer-events-auto border-l-8 border-brand bg-night p-4 text-white shadow-2xl"
           >
-            <p className="font-display text-lg font-black leading-tight">{t.title}</p>
+            <p className="font-display text-lg font-extrabold leading-tight">{t.title}</p>
             {t.body && <p className="mt-1 text-sm text-white/70">{t.body}</p>}
             {t.action && (
               <button
@@ -54,7 +54,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                   t.action?.onClick();
                   setToasts((all) => all.filter((x) => x.id !== t.id));
                 }}
-                className="mt-2 text-xs font-bold uppercase tracking-[0.12em] text-brand hover:underline"
+                className="mt-2 text-xs font-bold text-brand hover:underline"
               >
                 {t.action.label}
               </button>
@@ -166,7 +166,7 @@ export function NotificationBell({
           <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
         </svg>
         {unread.length > 0 && (
-          <span className="absolute -right-2 -top-2 flex min-w-5 items-center justify-center bg-danger px-1 text-[10px] font-black text-white">
+          <span className="absolute -right-2 -top-2 flex min-w-5 items-center justify-center bg-danger px-1 text-xs font-extrabold text-white">
             {unread.length > 9 ? '9+' : unread.length}
           </span>
         )}
@@ -182,11 +182,11 @@ export function NotificationBell({
       {open && (
         <div className="absolute right-0 top-12 z-40 w-96 max-w-[calc(100vw-2rem)] border-t-8 border-brand bg-surface shadow-2xl">
           <div className="flex items-center justify-between border-b border-border px-4 py-3">
-            <p className="text-xs font-black uppercase tracking-[0.18em]">Notifications</p>
+            <p className="text-xs font-extrabold">Notifications</p>
             {unread.length > 0 && (
               <button
                 type="button"
-                className="text-xs font-bold uppercase tracking-[0.1em] text-muted hover:text-text"
+                className="text-xs font-bold text-muted hover:text-text"
                 onClick={() => unread.forEach((n) => read.mutate(n.id))}
               >
                 Mark all read
@@ -216,7 +216,7 @@ export function NotificationBell({
                         {n.title}
                       </span>
                       {n.body && <span className="block text-xs text-muted">{n.body}</span>}
-                      <span className="mt-1 block text-[11px] uppercase tracking-[0.1em] text-muted">
+                      <span className="mt-1 block text-xs text-muted">
                         {timeFromNow(n.createdAt)}
                       </span>
                     </span>

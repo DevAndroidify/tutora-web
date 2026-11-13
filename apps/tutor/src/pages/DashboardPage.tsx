@@ -46,7 +46,7 @@ export function DashboardPage() {
             {steps.map((s, i) => (
               <li key={s.label} className="flex items-center gap-4 border-b border-border py-4">
                 <span
-                  className={`flex size-10 shrink-0 items-center justify-center font-display text-xl font-black ${
+                  className={`flex size-10 shrink-0 items-center justify-center font-display text-xl font-extrabold ${
                     s.done ? 'bg-brand text-black' : 'border-2 border-border text-muted'
                   }`}
                   aria-hidden
@@ -76,9 +76,7 @@ export function DashboardPage() {
         </section>
         <aside className="flex flex-col gap-8">
           <Card>
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.14em] text-muted">
-              Verification
-            </p>
+            <p className="mb-3 text-xs font-bold text-muted">Verification</p>
             <StatusTag status={p?.verificationStatus ?? 'NOT_SUBMITTED'} />
             {p?.badge && p.badge !== 'NONE' && (
               <p className="mt-3 text-sm">

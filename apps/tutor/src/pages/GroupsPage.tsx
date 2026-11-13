@@ -20,10 +20,10 @@ function PoolRow({ pool }: { pool: OpenPool }) {
           <Kicker className="mb-1">
             {skill.data?.name ?? 'Skill'} · {humanize(pool.level)}
           </Kicker>
-          <h2 className="text-2xl font-black leading-tight">
+          <h2 className="text-2xl font-extrabold leading-tight">
             {pool.members} learners want the same thing
           </h2>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.1em] text-muted">
+          <p className="mt-1 text-xs font-semibold text-muted">
             Up to {pool.seatCap} seats · learners stay anonymous until they pay
           </p>
         </div>

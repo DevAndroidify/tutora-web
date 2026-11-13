@@ -140,22 +140,22 @@ export function MarketplacePage() {
                         </Kicker>
                         {r.myBid ? <Tag tone="success">You bid</Tag> : null}
                       </div>
-                      <h2 className="story-title mt-2 text-2xl font-black leading-tight">
+                      <h2 className="story-title mt-2 text-2xl font-extrabold leading-tight">
                         {r.title}
                       </h2>
                       <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">
                         {r.description}
                       </p>
                       <div className="mt-auto flex flex-wrap items-end justify-between gap-3 pt-4">
-                        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-muted">
+                        <p className="text-xs font-semibold text-muted">
                           {r.studentDisplayName} · budget {formatINR(r.budgetHintPaise)}
                           {r.expiresAt ? ` · closes ${timeFromNow(r.expiresAt)}` : ''}
                         </p>
                         <p className="text-right">
-                          <span className="font-display text-3xl font-black leading-none">
+                          <span className="font-display text-3xl font-extrabold leading-none">
                             {r.bidCount}
                           </span>
-                          <span className="block text-[10px] font-bold uppercase tracking-[0.14em] text-muted">
+                          <span className="block text-xs font-bold text-muted">
                             {r.bidCount === 1 ? 'bid' : 'bids'}
                           </span>
                         </p>

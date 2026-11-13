@@ -79,7 +79,7 @@ export function EarningsPage() {
             <table className="w-full text-sm">
               <caption className="sr-only">Payouts sent to you</caption>
               <thead>
-                <tr className="border-b-2 border-text text-left text-xs uppercase tracking-[0.12em]">
+                <tr className="border-b-2 border-text text-left text-xs">
                   <th scope="col" className="py-2">
                     Date
                   </th>
@@ -102,10 +102,10 @@ export function EarningsPage() {
               </tbody>
               <tfoot>
                 <tr>
-                  <th scope="row" colSpan={2} className="py-3 text-left text-xs uppercase">
+                  <th scope="row" colSpan={2} className="py-3 text-left text-xs">
                     Total (last {e.payouts.length})
                   </th>
-                  <td className="py-3 text-right font-display text-xl font-black">
+                  <td className="py-3 text-right font-display text-xl font-extrabold">
                     {formatINR(paidOut)}
                   </td>
                 </tr>

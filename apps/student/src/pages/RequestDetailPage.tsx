@@ -83,9 +83,9 @@ export function RequestDetailPage({ id }: { id: string }) {
           <Kicker>{r.skill.name}</Kicker>
           <StatusTag status={r.status} />
         </div>
-        <h1 className="max-w-4xl text-4xl font-black leading-[1.05] md:text-5xl">{r.title}</h1>
+        <h1 className="max-w-4xl text-4xl font-extrabold leading-[1.05] md:text-5xl">{r.title}</h1>
         {r.status === 'OPEN' && r.expiresAt && (
-          <p className="mt-3 text-sm font-semibold uppercase tracking-[0.1em] text-muted">
+          <p className="mt-3 text-sm font-semibold text-muted">
             Taking bids · closes {timeFromNow(r.expiresAt)}
           </p>
         )}

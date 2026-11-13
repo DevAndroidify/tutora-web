@@ -90,10 +90,10 @@ export function DateBlock({ iso }: { iso: string }) {
       className="flex w-16 shrink-0 flex-col items-center border-2 border-text py-1.5"
       aria-hidden
     >
-      <span className="font-display text-3xl font-black leading-none">
+      <span className="font-display text-3xl font-extrabold leading-none">
         {String(d.getDate()).padStart(2, '0')}
       </span>
-      <span className="text-[10px] font-black uppercase tracking-[0.18em]">
+      <span className="text-xs font-extrabold">
         {d.toLocaleDateString('en-IN', { month: 'short' })}
       </span>
     </span>
@@ -119,8 +119,8 @@ export function SessionRow({
         <div className="story flex items-center gap-5 py-5">
           <DateBlock iso={seat.startsAt} />
           <div className="min-w-0 flex-1">
-            <h3 className="story-title truncate text-xl font-black">{title}</h3>
-            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.1em] text-muted">
+            <h3 className="story-title truncate text-xl font-extrabold">{title}</h3>
+            <p className="mt-1 text-xs font-semibold text-muted">
               {formatDateTime(seat.startsAt)} · {seat.durationMinutes} min · {who} ·{' '}
               {formatINR(seat.amountPaise)}
             </p>
@@ -190,10 +190,10 @@ export function PreJoin({
   return (
     <div className="grid gap-8 lg:grid-cols-[3fr_2fr]">
       <section className="flex flex-col items-start justify-center gap-4 bg-night p-8 text-white">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand">
+        <p className="text-xs font-bold text-brand">
           {seat.sessionStatus === 'LIVE' ? 'Live now' : open ? 'Room is open' : 'Room opens in'}
         </p>
-        <p className="font-display text-6xl font-black leading-none md:text-7xl">
+        <p className="font-display text-6xl font-extrabold leading-none md:text-7xl">
           {seat.sessionStatus === 'LIVE' || open
             ? 'Join the session'
             : formatCountdown(opensAt - now)}
@@ -213,7 +213,7 @@ export function PreJoin({
         {joinError && <p className="text-sm font-semibold text-brand">{joinError}</p>}
       </section>
       <Card>
-        <h3 className="text-xl font-black">Recording</h3>
+        <h3 className="text-xl font-extrabold">Recording</h3>
         <p className="mt-2 text-sm text-muted">
           A session is recorded only if everyone agrees. Recordings power your replay, transcript
           search and notes.
@@ -248,7 +248,7 @@ export function PreJoin({
                 </li>
               ))}
             </ul>
-            <p className="mt-3 text-xs font-bold uppercase tracking-[0.12em] text-muted">
+            <p className="mt-3 text-xs font-bold text-muted">
               {allYes ? 'This session will be recorded' : 'Not recorded unless everyone agrees'}
             </p>
           </>
@@ -387,7 +387,7 @@ export function ReplayView({ api, sessionId }: { api: SessionApi; sessionId: str
                   key={i}
                   className="flex gap-3 border-l-4 border-brand bg-surface px-4 py-2 text-sm"
                 >
-                  <span className="font-display text-lg font-black">{i + 1}</span>
+                  <span className="font-display text-lg font-extrabold">{i + 1}</span>
                   <span className="flex-1">{k.text}</span>
                   {k.atMs > 0 && r.recording.url && (
                     <button type="button" className="link text-xs" onClick={() => seek(k.atMs)}>
@@ -415,7 +415,7 @@ export function ReplayView({ api, sessionId }: { api: SessionApi; sessionId: str
                   }
                   className="flex min-h-36 w-full flex-col justify-center border-2 border-text bg-surface p-5 text-left hover:bg-bg"
                 >
-                  <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted">
+                  <span className="text-xs font-extrabold text-muted">
                     {flipped.has(i) ? 'Answer' : 'Question'}
                   </span>
                   <span className="mt-2 font-display text-lg font-bold">
@@ -476,7 +476,7 @@ export function ReplayView({ api, sessionId }: { api: SessionApi; sessionId: str
               </Button>
             </form>
             {query && (
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-muted">
+              <p className="mb-2 text-xs font-bold text-muted">
                 {segments.length} matches for “{query}”
               </p>
             )}

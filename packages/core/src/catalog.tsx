@@ -146,11 +146,7 @@ function QueryError({ error }: { error: Error }) {
 /** "★ 4.8 (12)" or "New" when nobody has rated yet. */
 function Rating({ rating }: { rating: PublicTutor['rating'] }) {
   if (!rating || !rating.count || rating.average === null) {
-    return (
-      <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted">
-        No ratings yet
-      </span>
-    );
+    return <span className="text-xs font-bold text-muted">No ratings yet</span>;
   }
   return (
     <span
@@ -205,12 +201,12 @@ function TutorCard({ tutor }: { tutor: PublicTutor }) {
       />
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
-          <h3 className="story-title text-lg font-black leading-tight">{tutor.fullName}</h3>
+          <h3 className="story-title text-lg font-extrabold leading-tight">{tutor.fullName}</h3>
           <BadgeTag badge={tutor.badge} />
           <Rating rating={tutor.rating} />
         </div>
         {tutor.headline && <p className="mt-1 text-sm text-muted">{tutor.headline}</p>}
-        <p className="mt-2 text-[11px] font-bold uppercase tracking-[0.12em] text-muted">
+        <p className="mt-2 text-xs font-bold text-muted">
           {tutor.skills.map((s) => s.skill.name).join(' · ') || 'No approved skills yet'}
         </p>
       </div>
@@ -247,11 +243,11 @@ export function FrontPage({ hero }: { hero?: ReactNode }) {
               {side.map((s, i) => (
                 <li key={s.id} className="border-b border-border py-4 first:pt-0">
                   <Link to="/skills/$slug" params={{ slug: s.slug }} className="story flex gap-4">
-                    <span className="font-display text-4xl font-black leading-none text-brand">
+                    <span className="font-display text-4xl font-extrabold leading-none text-brand">
                       {i + 1}
                     </span>
                     <div>
-                      <h3 className="story-title text-lg font-black leading-tight">{s.name}</h3>
+                      <h3 className="story-title text-lg font-extrabold leading-tight">{s.name}</h3>
                       {s.description && (
                         <p className="mt-1 line-clamp-2 text-sm text-muted">{s.description}</p>
                       )}
@@ -278,7 +274,9 @@ export function FrontPage({ hero }: { hero?: ReactNode }) {
                   search={{ category: c.id }}
                   className="block h-full p-4 hover:bg-brand hover:text-black"
                 >
-                  <span className="font-display text-lg font-black leading-tight">{c.name}</span>
+                  <span className="font-display text-lg font-extrabold leading-tight">
+                    {c.name}
+                  </span>
                   {c.description && (
                     <span className="mt-1 line-clamp-2 block text-xs opacity-70">
                       {c.description}
@@ -407,7 +405,7 @@ export function ExplorePage({
         </EmptyState>
       ) : (
         <>
-          <p className="mb-4 text-xs font-bold uppercase tracking-[0.14em] text-muted">
+          <p className="mb-4 text-xs font-bold text-muted">
             {skills.data.total} {skills.data.total === 1 ? 'skill' : 'skills'}
           </p>
           <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
@@ -428,7 +426,7 @@ export function ExplorePage({
 }
 
 const chip = (active: boolean) =>
-  `border-2 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.1em] ${
+  `border-2 px-3 py-1.5 text-xs font-bold ${
     active ? 'border-text bg-text text-bg' : 'border-border hover:border-text'
   }`;
 
@@ -449,7 +447,7 @@ export function SkillPage({
       <div className="grid gap-8 lg:grid-cols-5">
         <div className="lg:col-span-3">
           <Kicker className="mb-3">{s.category.name}</Kicker>
-          <h1 className="text-5xl font-black leading-[1.02] md:text-6xl">{s.name}</h1>
+          <h1 className="text-5xl font-extrabold leading-[1.02] md:text-6xl">{s.name}</h1>
           {s.description && (
             <p className="mt-5 font-display text-xl leading-relaxed text-muted">{s.description}</p>
           )}
@@ -574,9 +572,9 @@ export function TutorPage({
             <BadgeTag badge={t.badge} />
             <Rating rating={t.rating} />
           </div>
-          <h1 className="text-5xl font-black leading-[1.02]">{t.fullName}</h1>
+          <h1 className="text-5xl font-extrabold leading-[1.02]">{t.fullName}</h1>
           {t.headline && <p className="mt-3 font-display text-xl text-muted">{t.headline}</p>}
-          <p className="mt-4 text-xs font-bold uppercase tracking-[0.14em] text-muted">
+          <p className="mt-4 text-xs font-bold text-muted">
             {[
               t.experienceYears ? `${t.experienceYears} years teaching` : null,
               t.languages.join(', ') || null,
@@ -590,7 +588,7 @@ export function TutorPage({
       {t.bio && (
         <section aria-labelledby="about">
           <SectionHeader id="about" title="About" />
-          <p className="max-w-3xl whitespace-pre-line font-display text-lg leading-relaxed first-letter:float-left first-letter:mr-2 first-letter:text-6xl first-letter:font-black first-letter:leading-none">
+          <p className="max-w-3xl whitespace-pre-line font-display text-lg leading-relaxed first-letter:float-left first-letter:mr-2 first-letter:text-6xl first-letter:font-extrabold first-letter:leading-none">
             {t.bio}
           </p>
         </section>
@@ -603,20 +601,18 @@ export function TutorPage({
               <Link
                 to="/skills/$slug"
                 params={{ slug: s.skill.slug }}
-                className="font-display text-xl font-black hover:underline"
+                className="font-display text-xl font-extrabold hover:underline"
               >
                 {s.skill.name}
               </Link>
               {s.mastery && (
-                <p className="mt-1 text-xs font-bold uppercase tracking-[0.12em]">
+                <p className="mt-1 text-xs font-bold">
                   Teaching outcomes: <span className="text-text">{s.mastery.label}</span>
                   {s.mastery.score !== null ? ` · ${Math.round(s.mastery.score * 100)}%` : ''}
                 </p>
               )}
               {s.experienceYears ? (
-                <p className="mt-1 text-xs font-bold uppercase tracking-[0.12em] text-muted">
-                  {s.experienceYears} years
-                </p>
+                <p className="mt-1 text-xs font-bold text-muted">{s.experienceYears} years</p>
               ) : null}
               <p className="mt-2 text-sm leading-relaxed">{s.summary}</p>
             </li>
@@ -644,9 +640,9 @@ export function SkillPicker({
   if (value) {
     return (
       <div className="flex flex-col gap-1.5">
-        <span className="text-xs font-bold uppercase tracking-[0.1em]">{label}</span>
+        <span className="text-xs font-bold">{label}</span>
         <div className="flex items-center justify-between gap-3 border-2 border-text bg-surface px-3 py-2">
-          <span className="font-display text-lg font-black">{value.name}</span>
+          <span className="font-display text-lg font-extrabold">{value.name}</span>
           <Button variant="ghost" onClick={() => onChange(null)}>
             Change
           </Button>
@@ -656,7 +652,7 @@ export function SkillPicker({
   }
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor="skill-picker" className="text-xs font-bold uppercase tracking-[0.1em]">
+      <label htmlFor="skill-picker" className="text-xs font-bold">
         {label}
       </label>
       <input

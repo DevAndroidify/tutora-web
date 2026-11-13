@@ -78,13 +78,13 @@ function Tile({
       />
       {!camOn && (
         <div className="flex size-full items-center justify-center">
-          <span className="font-display text-6xl font-black text-white/30">
+          <span className="font-display text-6xl font-extrabold text-white/30">
             {label.slice(0, 1)}
           </span>
         </div>
       )}
       {!participant.isLocal && <audio ref={audio} autoPlay />}
-      <figcaption className="absolute bottom-0 left-0 flex items-center gap-2 bg-black/70 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.1em] text-white">
+      <figcaption className="absolute bottom-0 left-0 flex items-center gap-2 bg-black/70 px-3 py-1.5 text-xs font-bold text-white">
         {label}
         {mic?.isMuted && <span aria-label="muted">· muted</span>}
       </figcaption>
@@ -353,9 +353,7 @@ export default function LiveRoom({ sessionId, token, api, nameFor, onLeave }: Li
         <Tag tone={state === 'connected' ? 'danger' : 'warning'}>
           {state === 'connected' ? '● Live' : state}
         </Tag>
-        <span className="text-xs uppercase tracking-[0.14em] text-white/60">
-          {everyone.length} in the room
-        </span>
+        <span className="text-xs text-white/60">{everyone.length} in the room</span>
         <div role="group" aria-label="Bandwidth mode" className="ml-auto flex gap-1">
           {MODES.map((m) => (
             <button
@@ -365,7 +363,7 @@ export default function LiveRoom({ sessionId, token, api, nameFor, onLeave }: Li
               aria-pressed={mode === m.value}
               onClick={() => void applyMode(m.value, 'manual')}
               className={cn(
-                'px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em]',
+                'px-3 py-1.5 text-xs font-bold',
                 mode === m.value
                   ? 'bg-brand text-black'
                   : 'border border-white/30 text-white/80 hover:border-white',

@@ -54,7 +54,7 @@ export function BidsPage() {
                 params={{ id: b.requestId }}
                 className="story flex flex-wrap items-center gap-6 py-5"
               >
-                <span className="w-32 font-display text-3xl font-black">
+                <span className="w-32 font-display text-3xl font-extrabold">
                   {formatINR(b.seatPricePaise)}
                 </span>
                 <div className="min-w-0 flex-1">
@@ -62,9 +62,7 @@ export function BidsPage() {
                     {formatDateTime(b.proposedStartAt)} · {b.durationMinutes} min
                   </p>
                   <p className="truncate text-sm text-muted">{b.approachText}</p>
-                  <p className="mt-1 text-[11px] uppercase tracking-[0.1em] text-muted">
-                    updated {timeFromNow(b.updatedAt)}
-                  </p>
+                  <p className="mt-1 text-xs text-muted">updated {timeFromNow(b.updatedAt)}</p>
                 </div>
                 <StatusTag status={b.status} />
               </Link>

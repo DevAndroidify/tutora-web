@@ -83,10 +83,10 @@ export function SessionPage({ id }: { id: string }) {
           <Kicker>{request.data?.skill.name ?? 'Session'}</Kicker>
           <StatusTag status={seat.sessionStatus} />
         </div>
-        <h1 className="mt-2 max-w-4xl text-4xl font-black leading-[1.05] md:text-5xl">
+        <h1 className="mt-2 max-w-4xl text-4xl font-extrabold leading-[1.05] md:text-5xl">
           {request.data?.title ?? 'Your session'}
         </h1>
-        <p className="mt-3 text-sm font-semibold uppercase tracking-[0.1em] text-muted">
+        <p className="mt-3 text-sm font-semibold text-muted">
           with{' '}
           <Link to="/tutors/$userId" params={{ userId: seat.tutorUserId }} className="link">
             {tutorName}
@@ -169,10 +169,10 @@ function QuizPanel({ sessionId }: { sessionId: string }) {
       <SectionHeader id="quiz" title="Exit quiz" />
       {quiz.result ? (
         <div className="border-l-8 border-brand bg-surface p-5">
-          <p className="font-display text-5xl font-black">
+          <p className="font-display text-5xl font-extrabold">
             {quiz.result.correct}/{quiz.result.total}
           </p>
-          <p className="mt-1 text-sm font-bold uppercase tracking-[0.12em]">
+          <p className="mt-1 text-sm font-bold">
             {quiz.result.passed ? 'Passed' : 'Keep practising'}
           </p>
           <p className="mt-2 text-xs text-muted">
@@ -264,7 +264,7 @@ function ReviewPanel({ sessionId, tutorName }: { sessionId: string; tutorName: s
                 aria-checked={rating === n}
                 aria-label={`${n} star${n > 1 ? 's' : ''}`}
                 onClick={() => setRating(n)}
-                className={`size-11 border-2 font-display text-2xl font-black ${n <= rating ? 'border-text bg-brand text-black' : 'border-border text-muted'}`}
+                className={`size-11 border-2 font-display text-2xl font-extrabold ${n <= rating ? 'border-text bg-brand text-black' : 'border-border text-muted'}`}
               >
                 ★
               </button>

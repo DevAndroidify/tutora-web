@@ -87,8 +87,8 @@ export function RequestsPage() {
                 >
                   <div>
                     <Kicker className="mb-1">{r.skill.name}</Kicker>
-                    <h2 className="story-title text-2xl font-black leading-tight">{r.title}</h2>
-                    <p className="mt-1 text-xs font-semibold uppercase tracking-[0.1em] text-muted">
+                    <h2 className="story-title text-2xl font-extrabold leading-tight">{r.title}</h2>
+                    <p className="mt-1 text-xs font-semibold text-muted">
                       {r.level.toLowerCase()} · budget {formatINR(r.budgetHintPaise)} ·{' '}
                       {r.status === 'OPEN' && r.expiresAt
                         ? `bids close ${timeFromNow(r.expiresAt)}`
